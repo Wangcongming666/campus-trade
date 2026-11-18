@@ -73,3 +73,24 @@ knife4j:
 #   campus.ai.classify.provider: clip         # 图片分类实现 clip | mock | baidu（默认 clip）
 #   百度识别密钥：环境变量 BAIDU_AI_API_KEY / BAIDU_AI_SECRET_KEY
 # ---------------------------------------------------------------------------
+
+# 图片识别自动分类（CLIP 零样本，离线运行，模型由 scripts/ai/download_model.sh 下载；缺失时自动降级为无建议）
+# 注意：如后端另有 campus.ai.classify.* 配置，请合并到同一个 campus.ai 节点下，YAML 不允许重复的 campus 键
+campus:
+  ai:
+    clip:
+      enabled: ${CAMPUS_AI_CLIP_ENABLED:true}
+      # 相对后端工作目录（backend/）；Docker 部署时挂载模型目录并用环境变量指定绝对路径
+      model-dir: ${CAMPUS_AI_CLIP_MODEL_DIR:../scripts/ai/models/clip-vit-base-patch32}
+      vision-model: ${CAMPUS_AI_CLIP_VISION_MODEL:vision_model.onnx}
+      embeddings: category_embeddings.json
+      prompt-ensemble: true
+      logit-scale: 100.0
+      top-k: 3
+      preload: true
+      intra-op-threads: 2
+      max-concurrent: 2
+      acquire-timeout-ms: 5000
+      retry-interval-seconds: 300
+      max-pixels: 80000000
+      category-refresh-seconds: 60

@@ -47,10 +47,10 @@
    },
    "meanTop1ConfCorrect": 0.8555228842210166,
    "meanTop1ConfWrong": 0.5684528515256685,
-   "preprocessMsMean": 4.273024907433864,
-   "inferMsMean": 43.337190351798604,
-   "inferMsP50": 42.2262355004932,
-   "inferMsP95": 51.50252369940062,
+   "preprocessMsMean": 4.154008990772801,
+   "inferMsMean": 41.31072125919336,
+   "inferMsP50": 40.794666500005405,
+   "inferMsP95": 46.17926369983251,
    "modelFile": "vision_model.onnx",
    "modelMB": 351.7
   },
@@ -80,10 +80,10 @@
    },
    "meanTop1ConfCorrect": 0.8679796853443471,
    "meanTop1ConfWrong": 0.5553502876024979,
-   "preprocessMsMean": 4.273024907433864,
-   "inferMsMean": 43.337190351798604,
-   "inferMsP50": 42.2262355004932,
-   "inferMsP95": 51.50252369940062,
+   "preprocessMsMean": 4.154008990772801,
+   "inferMsMean": 41.31072125919336,
+   "inferMsP50": 40.794666500005405,
+   "inferMsP95": 46.17926369983251,
    "modelFile": "vision_model.onnx",
    "modelMB": 351.7
   },
@@ -113,10 +113,10 @@
    },
    "meanTop1ConfCorrect": 0.8442262038588524,
    "meanTop1ConfWrong": 0.6035107491271836,
-   "preprocessMsMean": 4.136992509369588,
-   "inferMsMean": 31.405623601804784,
-   "inferMsP50": 31.250506000105815,
-   "inferMsP95": 35.92944405017988,
+   "preprocessMsMean": 4.002579490723427,
+   "inferMsMean": 32.05069637051902,
+   "inferMsP50": 31.532904500636505,
+   "inferMsP95": 38.13033410024218,
    "modelFile": "vision_model_quantized.onnx",
    "modelMB": 89.1
   },
@@ -146,13 +146,41 @@
    },
    "meanTop1ConfCorrect": 0.8261071537760483,
    "meanTop1ConfWrong": 0.5933829538878941,
-   "preprocessMsMean": 4.136992509369588,
-   "inferMsMean": 31.405623601804784,
-   "inferMsP50": 31.250506000105815,
-   "inferMsP95": 35.92944405017988,
+   "preprocessMsMean": 4.002579490723427,
+   "inferMsMean": 32.05069637051902,
+   "inferMsP50": 31.532904500636505,
+   "inferMsP95": 38.13033410024218,
    "modelFile": "vision_model_quantized.onnx",
    "modelMB": 89.1
   }
  },
- "fp32VsInt8EmbeddingCosineMean": 0.9349116086959839
+ "fp32VsInt8EmbeddingCosineMean": 0.9349116086959839,
+ "java": {
+  "fp32": {
+   "top1": 0.7592592592592593,
+   "top3": 0.9537037037037037,
+   "parentTop1": 0.8888888888888888,
+   "top1AgreementWithPython": 1.0,
+   "embeddingCosineVsPython": {
+    "mean": 0.9999995277962027,
+    "min": 0.9999831814581548
+   },
+   "decodePreprocessMsMean": 18.961574074074075,
+   "inferMsMean": 41.59287037037037,
+   "inferMsP95": 48.32299999999998
+  },
+  "int8": {
+   "top1": 0.7962962962962963,
+   "top3": 0.9537037037037037,
+   "parentTop1": 0.9074074074074074,
+   "top1AgreementWithPython": 0.9722222222222222,
+   "embeddingCosineVsPython": {
+    "mean": 0.9900138016558283,
+    "min": 0.9577129209804598
+   },
+   "decodePreprocessMsMean": 17.52287037037037,
+   "inferMsMean": 31.266944444444444,
+   "inferMsP95": 34.6965
+  }
+ }
 }

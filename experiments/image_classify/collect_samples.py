@@ -174,7 +174,7 @@ def finalize():
             rows.append({"file": m["file"], "categoryId": cid, "categoryName": c["name"],
                          "parentId": c.get("parentId") or cid, "parentName": c.get("parentName") or c["name"],
                          "source": m["page"], "license": m["license"], "licenseUrl": m["licenseUrl"],
-                         "author": m["artist"]})
+                         "author": " ".join(m["artist"].split())})
     with open(os.path.join(HERE, "samples.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         w.writeheader()
