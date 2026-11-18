@@ -1,0 +1,493 @@
+/*
+ * Iris 通用组件样式（对应原型 prototype/assets/proto.css 的类名）
+ * 页面级布局写在各自 SFC 里；这里只放跨页面复用的原子样式和动效关键帧。
+ */
+
+/* ---------- 布局 ---------- */
+.ct-card {
+  background: var(--ct-surface);
+  border: 1px solid var(--ct-border);
+  border-radius: var(--ct-radius-lg);
+  box-shadow: var(--ct-shadow-1);
+}
+
+.ct-section {
+  margin-top: 56px;
+}
+
+.ct-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ct-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: var(--ct-fs-h2);
+  font-weight: 800;
+  line-height: var(--ct-lh-tight);
+  letter-spacing: -0.01em;
+}
+
+.ct-section-sub {
+  margin: 6px 0 0;
+  color: var(--ct-text-3);
+  font-size: 13px;
+}
+
+.ct-grad-text {
+  background: var(--ct-gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ct-link-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: var(--ct-primary);
+  cursor: pointer;
+
+  .el-icon {
+    transition: transform var(--ct-dur-base) var(--ct-ease-out);
+  }
+
+  &:hover .el-icon {
+    transform: translateX(4px);
+  }
+}
+
+/* ---------- 图标按钮 ---------- */
+.ct-icon-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  color: var(--ct-text-2);
+  cursor: pointer;
+  transition:
+    background-color var(--ct-dur-fast),
+    color var(--ct-dur-fast),
+    transform var(--ct-dur-fast) var(--ct-ease-out);
+
+  &:hover {
+    background: var(--ct-surface-sunken);
+    color: var(--ct-text);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.ct-dot-badge {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 2px solid var(--ct-surface);
+  border-radius: 99px;
+  background: var(--ct-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  animation: ct-badge-pop 0.5s var(--ct-ease-spring) both;
+}
+
+/* ---------- 按钮变体（设计答复 #2：联系卖家用描边 ghost） ---------- */
+.el-button.ct-btn-ghost {
+  --el-button-bg-color: var(--ct-surface);
+  --el-button-border-color: var(--ct-border-strong);
+  --el-button-text-color: var(--ct-text);
+  --el-button-hover-bg-color: var(--ct-surface);
+  --el-button-hover-border-color: var(--ct-primary);
+  --el-button-hover-text-color: var(--ct-primary);
+  --el-button-active-bg-color: var(--ct-surface);
+  --el-button-active-border-color: var(--ct-primary);
+}
+
+.el-button.ct-btn-soft {
+  --el-button-bg-color: var(--ct-primary-soft);
+  --el-button-border-color: transparent;
+  --el-button-text-color: var(--ct-primary);
+  --el-button-hover-bg-color: var(--ct-primary-soft-2);
+  --el-button-hover-border-color: transparent;
+  --el-button-hover-text-color: var(--ct-primary);
+}
+
+.el-button.ct-btn-hot:not(.is-disabled):hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.el-button.ct-btn-hot.is-disabled {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* 按钮涟漪（motion.md §10） */
+.ct-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.25;
+  pointer-events: none;
+  transform: scale(0);
+  animation: ct-ripple 0.6s var(--ct-ease-out);
+}
+
+/* ---------- Chip / Badge ---------- */
+.ct-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--ct-border);
+  border-radius: var(--ct-radius-pill);
+  background: var(--ct-surface);
+  color: var(--ct-text-2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--ct-dur-base) var(--ct-ease-out);
+
+  &:hover {
+    border-color: var(--ct-primary);
+    color: var(--ct-primary);
+    transform: translateY(-1px);
+  }
+
+  &.is-active {
+    border-color: var(--ct-text);
+    background: var(--ct-text);
+    color: var(--ct-surface);
+  }
+
+  &.is-soft.is-active {
+    border-color: var(--ct-primary);
+    background: var(--ct-primary-soft);
+    color: var(--ct-primary);
+  }
+
+  &.is-sm {
+    height: 28px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+}
+
+.ct-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--ct-radius-pill);
+  font-size: var(--ct-fs-micro);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+
+  .el-icon {
+    font-size: 12px;
+  }
+}
+
+.ct-badge--primary { background: var(--ct-primary-soft); color: var(--ct-primary); }
+.ct-badge--mint { background: var(--ct-mint-soft); color: var(--ct-mint-ink); }
+.ct-badge--hot { background: var(--ct-accent-soft); color: var(--ct-accent); }
+.ct-badge--sun { background: var(--ct-sun-soft); color: var(--ct-sun-ink); }
+.ct-badge--gray { background: var(--ct-surface-sunken); color: var(--ct-text-2); }
+.ct-badge--danger { background: var(--el-color-danger-light-9); color: var(--ct-danger); }
+.ct-badge--glass {
+  background: rgba(255, 255, 255, 0.78);
+  color: #23273b;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+html.dark {
+  .ct-badge--mint { color: var(--ct-mint); }
+  .ct-badge--sun { color: var(--ct-sun); }
+  .ct-badge--glass { background: rgba(20, 23, 42, 0.7); color: #eceefa; }
+}
+
+/* 推荐理由黄条 */
+.ct-reason {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  min-width: 0;
+  background: var(--ct-sun-soft);
+  color: var(--ct-sun-ink);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* 理由文案单行省略，全文见 title */
+.ct-reason__text {
+  overflow: hidden;
+  min-width: 0;
+  flex: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 左侧小图标按 reasonType 区分色调：CF 品牌紫、INTEREST 薄荷、HOT 珊瑚 */
+.ct-reason__ico {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ct-sun) 30%, transparent);
+  color: var(--ct-sun-ink);
+  font-size: 12px;
+}
+
+.ct-reason--cf .ct-reason__ico {
+  background: var(--ct-primary-soft);
+  color: var(--ct-primary);
+}
+
+.ct-reason--interest .ct-reason__ico {
+  background: var(--ct-mint-soft);
+  color: var(--ct-mint-ink);
+}
+
+.ct-reason--hot .ct-reason__ico {
+  background: var(--ct-accent-soft);
+  color: var(--ct-accent);
+}
+
+/* ---------- 骨架（motion.md §4） ---------- */
+.ct-sk {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--ct-gray-100);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transform: translateX(-100%);
+    animation: ct-shimmer 1.4s linear infinite;
+  }
+}
+
+html.dark .ct-sk {
+  background: #1b1f36;
+
+  &::after {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  }
+}
+
+.ct-sk-card {
+  overflow: hidden;
+  border: 1px solid var(--ct-border);
+  border-radius: var(--ct-radius-lg);
+  background: var(--ct-surface);
+
+  .ct-sk-img {
+    aspect-ratio: 1;
+    border-radius: 0;
+  }
+
+  .ct-sk-body {
+    display: grid;
+    gap: 10px;
+    padding: 14px 16px 16px;
+  }
+}
+
+/* ---------- 滚动出现（motion.md §3 方案 B，v-reveal） ---------- */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--ct-dur-slower) var(--ct-ease-out),
+    transform var(--ct-dur-slower) var(--ct-ease-out);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+
+[data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- 路由切换（motion.md §1） ---------- */
+.page-enter-active {
+  transition:
+    opacity var(--ct-dur-slower) var(--ct-ease-out),
+    transform var(--ct-dur-slower) var(--ct-ease-out),
+    filter var(--ct-dur-slower) var(--ct-ease-out);
+}
+
+.page-leave-active {
+  transition:
+    opacity 200ms var(--ct-ease-in),
+    transform 200ms var(--ct-ease-in),
+    filter 200ms var(--ct-ease-in);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(4px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+  filter: blur(4px);
+}
+
+/* 管理后台子路由：位移减半 */
+.page-admin-enter-active { transition: opacity var(--ct-dur-slower) var(--ct-ease-out), transform var(--ct-dur-slower) var(--ct-ease-out), filter var(--ct-dur-slower) var(--ct-ease-out); }
+.page-admin-leave-active { transition: opacity 200ms var(--ct-ease-in), transform 200ms var(--ct-ease-in), filter 200ms var(--ct-ease-in); }
+.page-admin-enter-from { opacity: 0; transform: translateY(8px); filter: blur(4px); }
+.page-admin-leave-to { opacity: 0; transform: translateY(-4px); filter: blur(4px); }
+
+/* ---------- 撒花 / 下单按钮 ---------- */
+.ct-confetti {
+  position: fixed;
+  z-index: 4000;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.ct-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ct-spin 0.7s linear infinite;
+}
+
+.ct-check-draw {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: ct-draw 0.45s var(--ct-ease-out) 0.05s forwards;
+}
+
+/* ---------- 关键帧 ---------- */
+@keyframes ct-badge-pop { from { transform: scale(0); } }
+@keyframes ct-ripple { to { transform: scale(2.6); opacity: 0; } }
+@keyframes ct-shimmer { to { transform: translateX(100%); } }
+@keyframes ct-spin { to { transform: rotate(360deg); } }
+@keyframes ct-draw { to { stroke-dashoffset: 0; } }
+@keyframes ct-float-y {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-12px) rotate(var(--r, 0deg)); }
+}
+@keyframes ct-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(20, 201, 162, 0.5); }
+  100% { box-shadow: 0 0 0 10px rgba(20, 201, 162, 0); }
+}
+@keyframes ct-fill { from { width: 0; } }
+@keyframes ct-grow { from { transform: scaleY(0); } }
+@keyframes ct-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* ---------- 减少动态效果（motion.md §12） ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-from,
+  .page-leave-to,
+  .page-admin-enter-from,
+  .page-admin-leave-to {
+    transform: none;
+    filter: none;
+  }
+
+  .ct-sk::after {
+    animation: none;
+  }
+}
+
+/* 触屏不做悬停位移 */
+@media (hover: none) {
+  .ct-chip:hover {
+    transform: none;
+  }
+}
+
+/* ---------- 暗色切换（motion.md §9）：View Transitions 圆形扩散，由 JS 控制 clip-path ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 暗色下商品图降低亮度，hover 恢复（头像和图标不处理） */
+html.dark {
+  .goods-card__cover img,
+  .stage > img,
+  .thumbs__item img,
+  .my-card__cover img,
+  .goods-side__img img,
+  .float-card img,
+  .rec img,
+  .goods-chip img,
+  .pin-goods img,
+  .session-item__thumb,
+  .cell-goods img,
+  .buy-goods img,
+  .img-cell img,
+  .ct-goods-img {
+    filter: brightness(0.92);
+    transition: filter var(--ct-dur-base);
+  }
+
+  .goods-card:hover .goods-card__cover img,
+  .stage:hover > img,
+  .thumbs__item:hover img,
+  .my-card:hover .my-card__cover img,
+  .goods-side__img:hover img,
+  .float-card:hover img,
+  .goods-chip:hover img,
+  .pin-goods:hover img,
+  .session-item:hover .session-item__thumb,
+  .img-cell:hover img,
+  .ct-goods-img:hover {
+    filter: brightness(1);
+  }
+}

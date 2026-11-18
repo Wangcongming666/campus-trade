@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>个人中心 · 校园闲置 高保真原型</title>
+<link rel="stylesheet" href="../tokens.css"><link rel="stylesheet" href="assets/proto.css">
+<style>
+.cover{position:relative;margin-top:24px;height:220px;border-radius:var(--ct-radius-xl);overflow:hidden;background:var(--ct-gradient-brand)}
+.cover::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 30%,rgba(255,255,255,.35),transparent 35%),radial-gradient(circle at 85% 80%,rgba(255,107,74,.6),transparent 40%),radial-gradient(circle at 60% 10%,rgba(20,201,162,.45),transparent 35%)}
+.cover .blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.14);animation:floatY 8s ease-in-out infinite}
+.cover .edit{position:absolute;right:20px;top:20px;background:rgba(255,255,255,.2);color:#fff;backdrop-filter:blur(10px)}
+.p-card{position:relative;margin:-84px 32px 0;padding:24px 32px;display:flex;align-items:center;gap:28px;border-radius:var(--ct-radius-xl);background:var(--ct-glass);backdrop-filter:blur(24px) saturate(1.6);border:1px solid var(--ct-glass-border);box-shadow:var(--ct-shadow-3)}
+.p-card .who h1{font-size:26px;font-weight:800;display:flex;align-items:center;gap:10px}
+.p-card .who p{margin-top:6px;color:var(--ct-text-2);font-size:13px;display:flex;gap:14px;align-items:center}
+.p-card .badges{margin-top:10px;display:flex;gap:8px}
+.p-stats{margin-left:auto;display:flex;gap:8px}
+.p-stats div{min-width:92px;padding:12px 16px;border-radius:18px;text-align:center;transition:background-color var(--ct-dur-base),transform var(--ct-dur-base) var(--ct-ease-spring);cursor:pointer}
+.p-stats div:hover{background:var(--ct-surface);transform:translateY(-3px)}
+.p-stats b{display:block;font-size:24px;font-weight:800}
+.p-stats span{font-size:12px;color:var(--ct-text-3)}
+.credit{position:relative;width:96px;height:96px;flex:none}
+.credit svg{transform:rotate(-90deg)}
+.credit circle{fill:none;stroke-width:8}
+.credit .bg{stroke:var(--ct-surface-sunken)}
+.credit .fg{stroke:url(#cg);stroke-linecap:round;stroke-dasharray:264;stroke-dashoffset:264;animation:cfill 1.6s var(--ct-ease-out) .3s forwards}
+@keyframes cfill{to{stroke-dashoffset:10.6}}
+html.shot .credit .fg{animation:none;stroke-dashoffset:10.6}
+.credit b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;font-weight:800;line-height:1}
+.credit b small{font-size:11px;color:var(--ct-text-3);font-weight:600;margin-top:4px}
+.layout{margin-top:28px;display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start}
+.side-nav{position:sticky;top:calc(var(--ct-header-h) + 20px);padding:12px}
+.side-nav a{display:flex;align-items:center;gap:12px;height:46px;padding:0 14px;border-radius:14px;font-weight:600;color:var(--ct-text-2);transition:all var(--ct-dur-fast)}
+.side-nav a:hover{background:var(--ct-surface-sunken);color:var(--ct-text)}
+.side-nav a.on{background:var(--ct-primary-soft);color:var(--ct-primary)}
+.side-nav a .n{margin-left:auto;font-size:12px}
+.side-nav hr{border:0;border-top:1px solid var(--ct-border);margin:8px 6px}
+.order-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.o-card{position:relative;overflow:hidden;padding:20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform var(--ct-dur-slow) var(--ct-ease-out),box-shadow var(--ct-dur-slow)}
+.o-card:hover{transform:translateY(-4px);box-shadow:var(--ct-shadow-3)}
+.o-card .oi{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 10px 20px -10px var(--c2)}
+.o-card b{display:block;font-size:24px;font-weight:800;line-height:1.1}
+.o-card span{font-size:12px;color:var(--ct-text-3)}
+.o-card::after{content:"";position:absolute;right:-30px;bottom:-30px;width:90px;height:90px;border-radius:50%;background:var(--c1);opacity:.12}
+.panel{margin-top:24px;padding:24px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.my-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.my-item{position:relative;border-radius:var(--ct-radius-lg);overflow:hidden;border:1px solid var(--ct-border);background:var(--ct-surface);transition:transform var(--ct-dur-slow) var(--ct-ease-out),box-shadow var(--ct-dur-slow)}
+.my-item:hover{transform:translateY(-4px);box-shadow:var(--ct-shadow-3)}
+.my-item .c{aspect-ratio:4/3;position:relative}
+.my-item .c [data-art]{position:absolute;inset:0}
+.my-item .st{position:absolute;left:10px;top:10px;z-index:2}
+.my-item.sold .c::after{content:"已售出";position:absolute;inset:0;z-index:2;display:grid;place-items:center;background:rgba(20,23,40,.45);color:#fff;font-weight:800;font-size:18px;letter-spacing:.2em;backdrop-filter:grayscale(1)}
+.my-item .b{padding:12px 14px}
+.my-item h4{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.my-item .ft{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.my-item .ft .faint{font-size:12px;display:flex;gap:10px}
+.my-item .ops{position:absolute;right:10px;top:10px;z-index:3;display:flex;gap:6px;opacity:0;transform:translateY(-6px);transition:all var(--ct-dur-base) var(--ct-ease-out)}
+.my-item:hover .ops{opacity:1;transform:none}
+.my-item .ops button{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--ct-glass);backdrop-filter:blur(8px)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.interest{display:flex;flex-wrap:wrap;gap:10px}
+.interest .chip{height:38px;padding:0 16px;font-size:14px}
+.interest .chip.is-active{background:var(--ct-primary-soft);color:var(--ct-primary);border-color:var(--ct-primary)}
+.rv{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--ct-border)} .rv:last-child{border:0}
+.rv .stars{color:#ffb020;display:inline-flex} .rv .stars svg{fill:#ffb020;width:12px;height:12px}
+.rv p{font-size:13px;color:var(--ct-text-2);margin-top:4px}
+</style>
+</head>
+<body>
+<div data-app-header></div>
+<main class="page"><div class="container">
+  <div class="cover"><span class="blob" style="width:180px;height:180px;left:8%;top:-60px"></span><span class="blob" style="width:120px;height:120px;right:22%;bottom:-40px;animation-delay:-3s"></span><button class="btn btn-sm edit"><i data-i="camera"></i>更换封面</button></div>
+  <section class="p-card" data-reveal>
+    <span class="avatar xl" style="--a1:#ff9a5a;--a2:#ff6b4a">张<i class="online" style="width:18px;height:18px;border-width:3px;right:6px;bottom:6px"></i></span>
+    <div class="who">
+      <h1>张同学 <span class="badge badge-mint" style="height:24px"><i data-i="shield"></i>学生认证</span></h1>
+      <p><span><i data-i="home"></i> 示例大学 · 计算机学院 2021 级</span><span><i data-i="calendar"></i> 加入 200 天</span></p>
+      <div class="badges"><span class="badge badge-sun">⚡ 秒回卖家</span><span class="badge badge-primary">🌱 环保达人</span><span class="badge badge-hot">🏅 好评 99%</span></div>
+    </div>
+    <div class="p-stats">
+      <div><b class="num" data-count="6">6</b><span>在售</span></div>
+      <div><b class="num" data-count="23">23</b><span>已售出</span></div>
+      <div><b class="num" data-count="41">41</b><span>收藏</span></div>
+      <div><b class="num" data-count="128">128</b><span>获赞</span></div>
+    </div>
+    <div class="credit"><svg width="96" height="96"><defs><linearGradient id="cg"><stop offset="0" stop-color="#14c9a2"/><stop offset="1" stop-color="#5b5cf0"/></linearGradient></defs><circle class="bg" cx="48" cy="48" r="42"/><circle class="fg" cx="48" cy="48" r="42"/></svg><b class="num"><span data-count="96">96</span><small>信誉分</small></b></div>
+  </section>
+
+  <section class="layout">
+    <nav class="card side-nav" data-reveal>
+      <a class="on" href="#"><i data-i="box"></i>我的发布<span class="n num">6</span></a>
+      <a href="#"><i data-i="wallet"></i>我的订单<span class="n badge badge-hot num">2</span></a>
+      <a href="#"><i data-i="heart"></i>我的收藏<span class="n num faint">41</span></a>
+      <a href="#"><i data-i="star"></i>评价管理</a>
+      <a href="#"><i data-i="sparkle"></i>兴趣偏好</a>
+      <hr>
+      <a href="#"><i data-i="shield"></i>学生认证</a>
+      <a href="#"><i data-i="settings"></i>账号设置</a>
+      <a href="index.html"><i data-i="logout"></i>退出登录</a>
+    </nav>
+    <div>
+      <div class="order-row" data-reveal-group>
+        <div class="card o-card" style="--c1:#818cf8;--c2:#5b5cf0"><span class="oi"><i data-i="handshake"></i></span><div><b class="num">2</b><span>待面交</span></div></div>
+        <div class="card o-card" style="--c1:#fcd34d;--c2:#f59e0b"><span class="oi"><i data-i="clock"></i></span><div><b class="num">1</b><span>已预订</span></div></div>
+        <div class="card o-card" style="--c1:#fda4af;--c2:#f43f5e"><span class="oi"><i data-i="star"></i></span><div><b class="num">1</b><span>待评价</span></div></div>
+        <div class="card o-card" style="--c1:#5eead4;--c2:#14b8a6"><span class="oi"><i data-i="check"></i></span><div><b class="num">31</b><span>已完成</span></div></div>
+      </div>
+
+      <div class="card panel" data-reveal>
+        <div class="panel-head"><div class="seg"><button class="is-active">在售 6</button><button>审核中 1</button><button>已售出 23</button><button>已下架 2</button></div><a class="btn btn-primary btn-sm btn-pill" href="publish.html"><i data-i="plus"></i>发布新闲置</a></div>
+        <div class="my-grid" data-reveal-group>
+          <div class="my-item"><div class="c"><div data-art="calc" style="--g1:#99f6e4;--g2:#14b8a6"></div><span class="st badge badge-mint">在售</span><div class="ops"><button><i data-i="edit"></i></button><button><i data-i="more"></i></button></div></div><div class="b"><h4>卡西欧 fx-991CN X 计算器</h4><div class="ft"><span class="price__now num" style="font-size:18px">¥68</span><span class="faint"><span><i data-i="eye"></i> 86</span><span><i data-i="heart"></i> 15</span></span></div></div></div>
+          <div class="my-item"><div class="c"><div data-art="lamp" style="--g1:#fef08a;--g2:#eab308"></div><span class="st badge badge-sun">已预订</span><div class="ops"><button><i data-i="edit"></i></button><button><i data-i="more"></i></button></div></div><div class="b"><h4>宿舍护眼台灯 三档调光</h4><div class="ft"><span class="price__now num" style="font-size:18px">¥35</span><span class="faint"><span><i data-i="eye"></i> 52</span><span><i data-i="heart"></i> 8</span></span></div></div></div>
+          <div class="my-item"><div class="c"><div data-art="book" style="--g1:#fde68a;--g2:#f59e0b"></div><span class="st badge badge-mint">在售</span><div class="ops"><button><i data-i="edit"></i></button><button><i data-i="more"></i></button></div></div><div class="b"><h4>数据结构（C语言版）严蔚敏</h4><div class="ft"><span class="price__now num" style="font-size:18px">¥18</span><span class="faint"><span><i data-i="eye"></i> 40</span><span><i data-i="heart"></i> 6</span></span></div></div></div>
+          <div class="my-item sold"><div class="c"><div data-art="kettle" style="--g1:#bae6fd;--g2:#0ea5e9"></div></div><div class="b"><h4>小米电热水壶 1.5L</h4><div class="ft"><span class="price__now num" style="font-size:18px;color:var(--ct-text-3)">¥20</span><span class="faint"><span>11/10 成交</span></span></div></div></div>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="card panel" data-reveal>
+          <div class="panel-head"><h3 style="font-weight:800">兴趣偏好 <span class="faint" style="font-weight:500;font-size:13px">最多 5 个 · 用于首页冷启动推荐</span></h3><span class="badge badge-primary num">3 / 5</span></div>
+          <div class="interest" data-chips="multi"><span class="chip is-active">💻 数码电子</span><span class="chip is-active">📚 教材书籍</span><span class="chip">🏠 生活日用</span><span class="chip is-active">🚲 运动户外</span><span class="chip">👟 服饰鞋包</span><span class="chip">🎸 乐器文艺</span><span class="chip">🎫 票券卡券</span></div>
+        </div>
+        <div class="card panel" data-reveal style="--i:1">
+          <div class="panel-head"><h3 style="font-weight:800">收到的评价</h3><a class="link-more" href="#">全部 23 条<i data-i="right"></i></a></div>
+          <div class="rv"><span class="avatar sm" style="--a1:#2dd4bf;--a2:#0d9488">钱</span><div><b style="font-size:13px">钱同学</b> <span class="stars"><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i></span><p>计算器很新，学长还送了电池，nice！</p></div></div>
+          <div class="rv"><span class="avatar sm" style="--a1:#7dd3fc;--a2:#0284c7">冯</span><div><b style="font-size:13px">冯同学</b> <span class="stars"><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i></span><p>准时面交，沟通顺畅。</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div></main>
+<footer class="footer"><div class="container"><span>© 2026 校园二手交易智能平台 · 毕业设计原型</span><span>Iris Design System</span></div></footer>
+<script src="assets/proto.js"></script>
+</body>
+</html>

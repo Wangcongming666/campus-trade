@@ -1,0 +1,12 @@
+// design-system.md §6 断点（CSS 变量不能用于 @media，这里用 SCSS）
+@use 'sass:map';
+
+$bp: (sm: 640px, md: 768px, lg: 1024px, xl: 1280px, 2xl: 1536px);
+
+@mixin up($k) {
+  @media (min-width: map.get($bp, $k)) { @content; }
+}
+
+@mixin down($k) {
+  @media (max-width: map.get($bp, $k) - 0.02px) { @content; }
+}

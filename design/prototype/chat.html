@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>消息 · 校园闲置 高保真原型</title>
+<link rel="stylesheet" href="../tokens.css"><link rel="stylesheet" href="assets/proto.css">
+<style>
+body{overflow:hidden}
+.chat{margin-top:20px;height:calc(100vh - var(--ct-header-h) - 40px);display:grid;grid-template-columns:330px 1fr 300px;border-radius:var(--ct-radius-xl);overflow:hidden;background:var(--ct-surface);border:1px solid var(--ct-border);box-shadow:var(--ct-shadow-3)}
+.sessions{display:flex;flex-direction:column;border-right:1px solid var(--ct-border);background:var(--ct-surface-2);min-height:0}
+.s-head{padding:22px 20px 12px}
+.s-head h2{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
+.s-search{margin-top:14px;display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:12px;background:var(--ct-surface-sunken);color:var(--ct-text-3)}
+.s-search input{border:0;outline:0;background:none;flex:1;min-width:0}
+.s-tabs{display:flex;gap:6px;padding:4px 20px 10px}
+.s-tabs .chip{height:28px;font-size:12px;padding:0 12px}
+.s-list{flex:1;overflow:auto;padding:4px 10px 10px}
+.s-item{position:relative;display:flex;gap:12px;padding:12px;border-radius:16px;cursor:pointer;transition:background-color var(--ct-dur-fast),transform var(--ct-dur-fast) var(--ct-ease-out)}
+.s-item:hover{background:var(--ct-surface-sunken)}
+.s-item.on{background:var(--ct-surface);box-shadow:var(--ct-shadow-2)}
+.s-item.on::before{content:"";position:absolute;left:-10px;top:18px;bottom:18px;width:4px;border-radius:0 4px 4px 0;background:var(--ct-gradient-brand)}
+.s-body{flex:1;min-width:0}
+.s-row{display:flex;align-items:center;gap:8px}
+.s-row b{font-size:14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s-row time{font-size:11px;color:var(--ct-text-3)}
+.s-prev{margin-top:3px;font-size:12px;color:var(--ct-text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-goods{width:40px;height:40px;border-radius:10px;flex:none;position:relative;overflow:hidden}
+.s-goods [data-art]{position:absolute;inset:0}
+.s-goods .art-svg{width:70%;height:70%}
+.unread{min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:var(--ct-accent);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center}
+.main{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--ct-surface)}
+.m-head{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--ct-border)}
+.m-head b{display:flex;align-items:center;gap:6px}
+.m-head .st{font-size:12px;color:var(--ct-mint);display:flex;align-items:center;gap:5px}
+.m-head .st::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ct-mint)}
+.pin{display:flex;align-items:center;gap:12px;margin:12px 22px 0;padding:10px 10px 10px 10px;border-radius:16px;background:var(--ct-surface-2);border:1px solid var(--ct-border)}
+.pin .g{width:48px;height:48px;border-radius:12px;position:relative;overflow:hidden;flex:none}
+.pin .g [data-art]{position:absolute;inset:0}
+.pin .g .art-svg{width:70%;height:70%}
+.pin .t{flex:1;min-width:0;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pin .p{color:var(--ct-price);font-weight:800}
+.msgs{flex:1;overflow:auto;padding:20px 22px;display:flex;flex-direction:column;gap:14px;background-image:radial-gradient(var(--ct-border) 1px,transparent 1px);background-size:22px 22px;background-position:-11px -11px}
+.day{align-self:center;font-size:11px;font-weight:600;color:var(--ct-text-3);padding:4px 12px;border-radius:99px;background:var(--ct-surface-sunken)}
+.row{display:flex;align-items:flex-end;gap:10px;max-width:72%}
+.row.me{align-self:flex-end;flex-direction:row-reverse}
+.bubble{padding:11px 15px;border-radius:20px 20px 20px 6px;background:var(--ct-surface);border:1px solid var(--ct-border);box-shadow:var(--ct-shadow-1);line-height:1.6;font-size:14px}
+.row.me .bubble{border:0;border-radius:20px 20px 6px 20px;color:#fff;background:var(--ct-gradient-brand);box-shadow:0 8px 20px -10px rgba(91,92,240,.7)}
+.meta-r{font-size:11px;color:var(--ct-text-3);white-space:nowrap;margin-bottom:2px}
+.meta-r.read{color:var(--ct-primary)}
+.row.in{animation:bubbleIn .42s var(--ct-ease-spring) both;transform-origin:bottom left}
+.row.me.in{transform-origin:bottom right}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(12px) scale(.85)}}
+html.shot .row.in{animation:none}
+.img-msg{width:200px;aspect-ratio:4/3;border-radius:18px;overflow:hidden;position:relative;box-shadow:var(--ct-shadow-2)}
+.img-msg [data-art]{position:absolute;inset:0}
+.goods-msg{width:260px;padding:10px;border-radius:18px;background:var(--ct-surface);border:1px solid var(--ct-border);box-shadow:var(--ct-shadow-2);display:flex;gap:10px}
+.goods-msg .g{width:64px;height:64px;border-radius:12px;position:relative;overflow:hidden;flex:none}
+.goods-msg .g [data-art]{position:absolute;inset:0}
+.goods-msg .g .art-svg{width:70%;height:70%}
+.goods-msg b{font-size:13px;display:block;line-height:1.4}
+.typing{display:flex;gap:4px;padding:14px 16px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--ct-text-3);animation:typing 1.2s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+.quick{display:flex;gap:8px;padding:0 22px 10px;overflow:auto}
+.quick .chip{height:30px;font-size:12px}
+.composer{display:flex;align-items:center;gap:6px;margin:0 22px 18px;padding:8px 8px 8px 10px;border-radius:22px;background:var(--ct-surface-sunken);border:1.5px solid transparent;transition:all var(--ct-dur-base)}
+.composer:focus-within{background:var(--ct-surface);border-color:var(--ct-primary);box-shadow:var(--ct-ring)}
+.composer input{flex:1;border:0;outline:0;background:none;padding:0 6px;min-width:0}
+.composer .icon-btn{width:36px;height:36px;border-radius:12px}
+.send{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;color:#fff;background:var(--ct-gradient-brand);box-shadow:var(--ct-shadow-glow);transition:transform var(--ct-dur-fast) var(--ct-ease-spring)}
+.send:hover{transform:scale(1.06) rotate(-8deg)} .send:active{transform:scale(.9)}
+.aside{border-left:1px solid var(--ct-border);background:var(--ct-surface-2);padding:22px;display:flex;flex-direction:column;gap:16px;overflow:auto}
+.aside .g{aspect-ratio:1;border-radius:20px;position:relative;overflow:hidden}
+.aside .g [data-art]{position:absolute;inset:0}
+.aside h4{font-size:15px;font-weight:800;line-height:1.4}
+.kv{display:grid;gap:10px;font-size:13px}
+.kv div{display:flex;justify-content:space-between;color:var(--ct-text-3)} .kv b{color:var(--ct-text);font-weight:600}
+</style>
+</head>
+<body>
+<div data-app-header></div>
+<main class="page"><div class="container">
+<section class="chat">
+  <div class="sessions">
+    <div class="s-head"><h2>消息 <span class="badge badge-hot num">5 未读</span></h2>
+      <label class="s-search"><i data-i="search"></i><input placeholder="搜索联系人或商品"></label></div>
+    <div class="s-tabs" data-chips><span class="chip is-active">全部</span><span class="chip">未读</span><span class="chip">我买的</span><span class="chip">我卖的</span></div>
+    <div class="s-list" data-reveal-group>
+      <div class="s-item on"><span class="avatar" style="--a1:#60a5fa;--a2:#6366f1">李<i class="online"></i></span><div class="s-body"><div class="s-row"><b>李同学</b><time>21:02</time></div><div class="s-prev">那今晚 8 点图书馆门口见～</div></div><div class="s-goods"><div data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div></div></div>
+      <div class="s-item"><span class="avatar" style="--a1:#f9a8d4;--a2:#ec4899">王<i class="online"></i></span><div class="s-body"><div class="s-row"><b>王学姐</b><time>20:41</time><span class="unread num">2</span></div><div class="s-prev">[图片] 笔记都在这里啦</div></div><div class="s-goods"><div data-art="book" style="--g1:#fde68a;--g2:#f59e0b"></div></div></div>
+      <div class="s-item"><span class="avatar" style="--a1:#34d399;--a2:#059669">赵</span><div class="s-body"><div class="s-row"><b>赵同学</b><time>19:15</time><span class="unread num">1</span></div><div class="s-prev">车锁钥匙有两把，都给你</div></div><div class="s-goods"><div data-art="bike" style="--g1:#6ee7b7;--g2:#10b981"></div></div></div>
+      <div class="s-item"><span class="avatar" style="--a1:#fb923c;--a2:#ea580c">林</span><div class="s-body"><div class="s-row"><b>林学长</b><time>昨天</time></div><div class="s-prev">快门数可以拍给你看</div></div><div class="s-goods"><div data-art="camera" style="--g1:#fdba74;--g2:#f97316"></div></div></div>
+      <div class="s-item"><span class="avatar" style="--a1:#a78bfa;--a2:#7c3aed">陈</span><div class="s-body"><div class="s-row"><b>陈同学</b><time>昨天</time><span class="unread num">2</span></div><div class="s-prev">耳机还在吗？可以小刀吗</div></div><div class="s-goods"><div data-art="headphones" style="--g1:#c4b5fd;--g2:#7c3aed"></div></div></div>
+      <div class="s-item"><span class="avatar" style="--a1:#38bdf8;--a2:#0284c7">周</span><div class="s-body"><div class="s-row"><b>周同学</b><time>周一</time></div><div class="s-prev">好的，谢谢学长</div></div><div class="s-goods"><div data-art="keyboard" style="--g1:#93c5fd;--g2:#2563eb"></div></div></div>
+      <div class="s-item"><span class="avatar" style="--a1:#2dd4bf;--a2:#0d9488">钱</span><div class="s-body"><div class="s-row"><b>钱同学</b><time>11/12</time></div><div class="s-prev">计算器已收到，好评～</div></div><div class="s-goods"><div data-art="calc" style="--g1:#99f6e4;--g2:#14b8a6"></div></div></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="m-head"><span class="avatar" style="--a1:#60a5fa;--a2:#6366f1">李<i class="online"></i></span><div><b>李同学 <span class="badge badge-mint"><i data-i="shield"></i>已认证</span></b><span class="st">在线 · 东区 3 号楼</span></div>
+      <div style="margin-left:auto;display:flex;gap:4px"><button class="icon-btn"><i data-i="search"></i></button><button class="icon-btn"><i data-i="flag"></i></button><button class="icon-btn"><i data-i="more"></i></button></div></div>
+    <div class="pin"><div class="g"><div data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div></div><div class="t">iPad Air 5 64G 星光色 带原装二代笔<div class="p num">¥2,680</div></div><a class="btn btn-sm btn-ghost" href="detail.html">查看</a><button class="btn btn-sm btn-hot" data-order>立即下单</button></div>
+    <div class="msgs" id="msgs">
+      <span class="day">今天 20:48</span>
+      <div class="row"><span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div class="goods-msg"><div class="g"><div data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div></div><div><b>iPad Air 5 64G 星光色 带原装二代笔</b><span class="price__now num" style="font-size:16px">¥2,680</span></div></div></div>
+      <div class="row me"><div class="bubble">学长你好，这个 iPad 还在吗？电池健康大概多少呀</div><span class="meta-r read">已读</span></div>
+      <div class="row"><span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div class="bubble">在的～电池 96%，一直带壳用的，给你看下设置截图</div></div>
+      <div class="row"><span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div class="img-msg"><div data-art="tablet" style="--g1:#e9d5ff;--g2:#a855f7"></div></div></div>
+      <div class="row me"><div class="bubble">好的！笔也是原装的对吧？能 2,600 吗 🙏</div><span class="meta-r read">已读</span></div>
+      <div class="row"><span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div class="bubble">原装的，有购买凭证。2,650 吧，包贴新膜</div></div>
+      <div class="row me"><div class="bubble">成交！今晚可以面交吗？</div><span class="meta-r read">已读</span></div>
+      <div class="row"><span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div class="bubble">那今晚 8 点图书馆门口见～</div></div>
+      <div class="row" id="typing"><span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div class="bubble typing"><i></i><i></i><i></i></div></div>
+    </div>
+    <div class="quick" data-quick><span class="chip">好的，准时到 👌</span><span class="chip">可以再便宜点吗？</span><span class="chip">在哪里面交？</span><span class="chip">发个实拍图看看</span></div>
+    <form class="composer" id="composer"><button type="button" class="icon-btn"><i data-i="smile"></i></button><button type="button" class="icon-btn"><i data-i="image"></i></button><button type="button" class="icon-btn"><i data-i="box"></i></button><input id="ipt" placeholder="输入消息，Enter 发送"><button class="send" aria-label="发送"><i data-i="send"></i></button></form>
+  </div>
+
+  <aside class="aside">
+    <div class="g"><div data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div></div>
+    <h4>iPad Air 5 64G 星光色 带原装二代笔</h4>
+    <div class="price"><span class="price__now num"><small>¥</small>2,680</span><span class="price__origin num">¥4,799</span></div>
+    <div class="kv"><div>成色<b>95新</b></div><div>交易方式<b>当面交易</b></div><div>地点<b>东区 · 3号宿舍楼</b></div><div>卖家信誉<b style="color:var(--ct-mint)">98 分</b></div></div>
+    <div class="safety" style="display:flex;gap:8px;padding:12px 14px;border-radius:16px;background:var(--ct-mint-soft);font-size:12px;color:var(--ct-text-2)"><i data-i="shield" style="color:var(--ct-mint)"></i>平台不会要求站外转账，面交时请当场验货。</div>
+  </aside>
+</section>
+</div></main>
+<script src="assets/proto.js"></script>
+<script>
+  const msgs = document.getElementById('msgs'), typing = document.getElementById('typing');
+  msgs.scrollTop = msgs.scrollHeight;
+  const add = (html, me) => { const r = document.createElement('div'); r.className = `row in ${me ? 'me' : ''}`;
+    r.innerHTML = me ? `<div class="bubble">${html}</div><span class="meta-r">送达</span>` : `<span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div class="bubble">${html}</div>`;
+    msgs.insertBefore(r, typing); msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' }); return r; };
+  const send = txt => { if (!txt.trim()) return; const r = add(txt, true);
+    setTimeout(() => { r.querySelector('.meta-r').textContent = '已读'; r.querySelector('.meta-r').classList.add('read'); }, 900);
+    typing.style.display = 'flex'; setTimeout(() => { add('收到～到了给你发消息 😊'); }, 1600); };
+  document.getElementById('composer').addEventListener('submit', e => { e.preventDefault(); const i = document.getElementById('ipt'); send(i.value); i.value = ''; });
+  document.querySelector('[data-quick]').addEventListener('click', e => { const c = e.target.closest('.chip'); if (c) send(c.textContent); });
+</script>
+</body>
+</html>

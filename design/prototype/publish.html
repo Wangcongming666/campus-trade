@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>发布闲置 · 校园闲置 高保真原型</title>
+<link rel="stylesheet" href="../tokens.css"><link rel="stylesheet" href="assets/proto.css">
+<style>
+.pub-head{display:flex;align-items:flex-end;justify-content:space-between;margin:32px 0 24px}
+.pub-head h1{font-size:var(--ct-fs-h1);font-weight:800;letter-spacing:-.02em}
+.steps{display:flex;align-items:center;gap:8px}
+.step{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:var(--ct-text-3)}
+.step i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;background:var(--ct-surface-sunken);font-size:12px}
+.step.done{color:var(--ct-text-2)} .step.done i{background:var(--ct-mint);color:#fff}
+.step.cur{color:var(--ct-primary)} .step.cur i{background:var(--ct-gradient-brand);color:#fff;box-shadow:var(--ct-shadow-glow)}
+.step-line{width:36px;height:2px;border-radius:2px;background:var(--ct-border)}
+.step-line.done{background:var(--ct-mint)}
+.pub{display:grid;grid-template-columns:8fr 4fr;gap:28px;align-items:start}
+.form{display:flex;flex-direction:column;gap:20px}
+.fsec{padding:28px}
+.fsec h2{display:flex;align-items:center;gap:10px;font-size:var(--ct-fs-h4);font-weight:800;margin-bottom:18px}
+.fsec h2 .n{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:var(--ct-primary-soft);color:var(--ct-primary);font-size:13px}
+.fsec h2 small{margin-left:auto;font-size:12px;color:var(--ct-text-3);font-weight:500}
+.uploader{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.up-item{position:relative;aspect-ratio:1;border-radius:18px;overflow:hidden;cursor:grab;transition:transform var(--ct-dur-base) var(--ct-ease-out),box-shadow var(--ct-dur-base)}
+.up-item:hover{transform:translateY(-3px);box-shadow:var(--ct-shadow-3)}
+.up-item [data-art]{position:absolute;inset:0}
+.up-item .cover{position:absolute;left:8px;top:8px;z-index:2}
+.up-item .ops{position:absolute;inset:auto 0 0 0;z-index:2;display:flex;justify-content:center;gap:6px;padding:8px;background:linear-gradient(transparent,rgba(20,23,40,.55));opacity:0;transform:translateY(8px);transition:all var(--ct-dur-base) var(--ct-ease-out)}
+.up-item:hover .ops{opacity:1;transform:none}
+.up-item .ops button{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.9);color:#23273b}
+.up-item .prog{position:absolute;inset:0;z-index:2;display:grid;place-items:center;background:rgba(20,23,40,.35);color:#fff;font-weight:800;backdrop-filter:blur(2px)}
+.up-item .prog::after{content:"";position:absolute;left:12px;right:12px;bottom:12px;height:4px;border-radius:4px;background:linear-gradient(90deg,#fff 68%,rgba(255,255,255,.3) 68%)}
+.up-add{aspect-ratio:1;border-radius:18px;border:2px dashed var(--ct-border-strong);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ct-text-3);font-size:12px;font-weight:600;background:var(--ct-surface-2);transition:all var(--ct-dur-base) var(--ct-ease-out)}
+.up-add:hover{border-color:var(--ct-primary);color:var(--ct-primary);background:var(--ct-primary-soft)}
+.up-add .plus{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--ct-surface);box-shadow:var(--ct-shadow-2);color:var(--ct-primary)}
+.hint{margin-top:12px;font-size:12px;color:var(--ct-text-3);display:flex;gap:16px}
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.field:last-child{margin-bottom:0}
+.field label{font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+.field label span{color:var(--ct-text-3);font-weight:500}
+.input,.textarea{width:100%;height:48px;padding:0 16px;border-radius:var(--ct-radius-md);background:var(--ct-surface-sunken);border:1.5px solid transparent;outline:0;transition:all var(--ct-dur-base) var(--ct-ease-out)}
+.textarea{height:120px;padding:14px 16px;resize:none;line-height:1.7}
+.input:hover,.textarea:hover{border-color:var(--ct-border-strong)}
+.input:focus,.textarea:focus{background:var(--ct-surface);border-color:var(--ct-primary);box-shadow:var(--ct-ring)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cond{display:flex;flex-wrap:wrap;gap:8px}
+.price-in{position:relative}
+.price-in b{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--ct-price);font-weight:800}
+.price-in .input{height:60px;padding-left:44px;font-size:26px;font-weight:800;font-family:var(--ct-font-num);color:var(--ct-price)}
+.ai{position:relative;overflow:hidden;padding:20px;border-radius:var(--ct-radius-lg);background:var(--ct-surface-2);border:1px solid var(--ct-primary-soft-2)}
+.ai::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(120deg,#5b5cf0,#c264f0,#ff6b4a,#14c9a2,#5b5cf0);background-size:300% 100%;animation:flow 6s linear infinite;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+@keyframes flow{to{background-position:300% 0}}
+.ai .hd{display:flex;align-items:center;gap:10px;font-weight:800}
+.ai .hd .ico{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--ct-gradient-brand);color:#fff}
+.ai .val{margin:14px 0 4px;font-size:28px;font-weight:800}
+.bars{display:flex;align-items:flex-end;gap:5px;height:64px;margin:14px 0 6px}
+.bars i{flex:1;border-radius:6px 6px 2px 2px;background:var(--ct-primary-soft-2);transform-origin:bottom;animation:grow .8s var(--ct-ease-out) both}
+.bars i.in{background:linear-gradient(180deg,var(--ct-primary),#8b5cf6)}
+@keyframes grow{from{transform:scaleY(0)}}
+.ai .foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--ct-text-3)}
+.trade{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.opt{display:flex;align-items:center;gap:12px;padding:16px;border-radius:var(--ct-radius-lg);border:1.5px solid var(--ct-border);cursor:pointer;transition:all var(--ct-dur-base) var(--ct-ease-out)}
+.opt .oi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--ct-surface-sunken);color:var(--ct-text-2);transition:all var(--ct-dur-base)}
+.opt b{display:block;font-size:14px} .opt span{font-size:12px;color:var(--ct-text-3)}
+.opt.is-active{border-color:var(--ct-primary);background:var(--ct-primary-soft)}
+.opt.is-active .oi{background:var(--ct-gradient-brand);color:#fff}
+.side{position:sticky;top:calc(var(--ct-header-h) + 20px);display:flex;flex-direction:column;gap:16px}
+.preview-label{display:flex;align-items:center;justify-content:space-between;font-weight:800}
+.complete{padding:20px}
+.complete .bar{height:8px;border-radius:8px;background:var(--ct-surface-sunken);overflow:hidden;margin:12px 0}
+.complete .bar i{display:block;height:100%;width:80%;border-radius:8px;background:var(--ct-gradient-fresh);animation:fill 1.2s var(--ct-ease-out) both}
+@keyframes fill{from{width:0}}
+.complete ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:13px}
+.complete li{display:flex;align-items:center;gap:8px;color:var(--ct-text-2)}
+.complete li svg{color:var(--ct-mint)} .complete li.todo svg{color:var(--ct-text-3)}
+.actionbar{position:sticky;bottom:16px;z-index:5;margin-top:24px;display:flex;align-items:center;gap:12px;padding:12px 12px 12px 24px;border-radius:var(--ct-radius-xl);background:var(--ct-glass);backdrop-filter:blur(20px) saturate(1.6);border:1px solid var(--ct-border);box-shadow:var(--ct-shadow-3)}
+html.shot .actionbar{position:relative;bottom:auto}
+.actionbar .grow{flex:1;font-size:13px;color:var(--ct-text-3)}
+</style>
+</head>
+<body>
+<div data-app-header></div>
+<main class="page"><div class="container">
+  <div class="pub-head" data-reveal>
+    <div><h1>发布闲置</h1><p class="muted" style="margin-top:6px">拍清楚、写明白、价格合理，平均 2.3 小时就能被同校同学看中（示例数据）</p></div>
+    <div class="steps"><span class="step done"><i>✓</i>上传图片</span><span class="step-line done"></span><span class="step done"><i>✓</i>商品信息</span><span class="step-line done"></span><span class="step cur"><i>3</i>定价</span><span class="step-line"></span><span class="step"><i>4</i>提交审核</span></div>
+  </div>
+  <section class="pub">
+    <div class="form">
+      <div class="card fsec" data-reveal>
+        <h2><span class="n">1</span>商品图片<small>jpg / png / webp，单张 ≤ 5MB，最多 9 张，第一张为封面</small></h2>
+        <div class="uploader">
+          <div class="up-item"><div data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div><span class="cover badge badge-glass">封面</span><div class="ops"><button><i data-i="move"></i></button><button><i data-i="edit"></i></button><button><i data-i="trash"></i></button></div></div>
+          <div class="up-item"><div data-art="tablet" style="--g1:#e9d5ff;--g2:#a855f7"></div><div class="ops"><button><i data-i="move"></i></button><button><i data-i="trash"></i></button></div></div>
+          <div class="up-item"><div data-art="laptop" style="--g1:#bae6fd;--g2:#0ea5e9"></div><div class="ops"><button><i data-i="move"></i></button><button><i data-i="trash"></i></button></div></div>
+          <div class="up-item"><div data-art="keyboard" style="--g1:#fde68a;--g2:#f59e0b"></div><div class="prog num">68%</div></div>
+          <button class="up-add" type="button"><span class="plus"><i data-i="upload"></i></span>拖拽或点击上传<span class="num">4 / 9</span></button>
+        </div>
+        <div class="hint"><span>· 拖拽图片可调整顺序</span><span>· 建议包含正面、细节、瑕疵、配件</span></div>
+      </div>
+
+      <div class="card fsec" data-reveal>
+        <h2><span class="n">2</span>商品信息</h2>
+        <div class="field"><label>标题 <span class="num" id="tc">26 / 40</span></label><input class="input" id="title" value="iPad Air 5 64G 星光色 带原装二代笔 考研党自用" maxlength="40"></div>
+        <div class="row2">
+          <div class="field"><label>分类</label><div class="cond" data-chips><span class="chip is-active">数码电子</span><span class="chip">教材书籍</span><span class="chip">生活日用</span><span class="chip">运动户外</span><span class="chip">其他</span></div></div>
+          <div class="field"><label>成色</label><div class="cond" data-chips id="cond"><span class="chip">全新</span><span class="chip">99新</span><span class="chip is-active">95新</span><span class="chip">9成新</span><span class="chip">8成新及以下</span></div></div>
+        </div>
+        <div class="field"><label>描述 <span>说说入手时间、使用情况、瑕疵和交易方式</span></label><textarea class="textarea">去年 9 月教育优惠购入，一直贴膜带壳，电池健康 96%，配原装二代 Apple Pencil。考研结束出掉，可在东区 3 号楼或图书馆当面验机。</textarea></div>
+        <div class="field"><label>交易方式</label>
+          <div class="trade" data-chips>
+            <div class="opt is-active"><span class="oi"><i data-i="handshake"></i></span><div><b>当面交易</b><span>校内约定地点</span></div></div>
+            <div class="opt"><span class="oi"><i data-i="home"></i></span><div><b>宿舍自提</b><span>买家上门取</span></div></div>
+            <div class="opt"><span class="oi"><i data-i="truck"></i></span><div><b>快递邮寄</b><span>运费另议</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card fsec" data-reveal>
+        <h2><span class="n">3</span>定价</h2>
+        <div class="row2" style="align-items:start">
+          <div>
+            <div class="field"><label>出售价格</label><div class="price-in"><b>¥</b><input class="input" id="price" value="2680"></div></div>
+            <div class="field"><label>原价 <span>选填，用于展示折扣</span></label><input class="input num" value="4799"></div>
+          </div>
+          <div class="ai">
+            <div class="hd"><span class="ico"><i data-i="sparkle"></i></span>智能定价建议<span class="badge badge-primary" style="margin-left:auto">基于 32 件同类</span></div>
+            <div class="val num grad-text">¥2,450 – ¥2,900</div>
+            <div class="faint" style="font-size:12px">同类目「平板电脑」· 成色 95新 · 近 90 天在售/成交价格分布</div>
+            <div class="bars"><i style="height:20%"></i><i style="height:34%"></i><i style="height:48%"></i><i class="in" style="height:72%"></i><i class="in" style="height:100%"></i><i class="in" style="height:86%"></i><i style="height:52%"></i><i style="height:30%"></i><i style="height:16%"></i></div>
+            <div class="range-scale num" style="display:flex;justify-content:space-between;font-size:11px;color:var(--ct-text-3)"><span>¥1,900</span><span>¥2,680 ← 你的定价在合理区间</span><span>¥3,400</span></div>
+            <div class="foot"><span>建议仅供参考，不影响发布</span><button class="btn btn-sm btn-soft btn-pill" id="useAi">采用 ¥2,680</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="preview-label" data-reveal><span>实时预览</span><span class="badge badge-gray"><i data-i="eye"></i>同学看到的样子</span></div>
+      <div id="preview" data-reveal></div>
+      <div class="card complete" data-reveal>
+        <div style="display:flex;justify-content:space-between;font-weight:800">信息完整度<span class="num" style="color:var(--ct-mint)">80%</span></div>
+        <div class="bar"><i></i></div>
+        <ul><li><i data-i="check"></i>已上传 4 张图片</li><li><i data-i="check"></i>标题与描述完整</li><li><i data-i="check"></i>价格在建议区间内</li><li class="todo"><i data-i="clock"></i>补充 1 张瑕疵细节图可提升 18% 咨询率（示例）</li></ul>
+      </div>
+    </aside>
+  </section>
+  <div class="actionbar">
+    <span class="grow"><i data-i="shield"></i> 提交后将进入审核，通常 10 分钟内完成（示例）。发布即表示同意《校园交易公约》。</span>
+    <button class="btn btn-ghost">存草稿</button>
+    <button class="btn btn-primary btn-lg" onclick="ctConfetti(innerWidth-120,innerHeight-60);ctToast('已提交审核，审核通过后自动上架')"><i data-i="send"></i>发布闲置</button>
+  </div>
+</div></main>
+<footer class="footer"><div class="container"><span>© 2026 校园二手交易智能平台 · 毕业设计原型</span><span>Iris Design System</span></div></footer>
+<script src="assets/data.js"></script>
+<script>
+  const base = { ...CT_GOODS[0], u: '张同学', a: ['#ff9a5a', '#ff6b4a'], time: '刚刚', loc: '东区 · 3号宿舍楼' };
+  const render = () => {
+    const t = document.getElementById('title').value || '请输入标题', p = +document.getElementById('price').value || 0;
+    const c = document.querySelector('#cond .is-active')?.textContent || '95新';
+    document.getElementById('preview').innerHTML = ctGoodsCard({ ...base, t, p, c }); window.ctHydrate && ctHydrate(document.getElementById('preview'));
+    document.getElementById('tc').textContent = `${t.length} / 40`;
+  };
+  render();
+  ['title', 'price'].forEach(id => document.getElementById(id).addEventListener('input', render));
+  document.getElementById('cond').addEventListener('click', () => setTimeout(render));
+</script>
+<script src="assets/proto.js"></script>
+</body>
+</html>

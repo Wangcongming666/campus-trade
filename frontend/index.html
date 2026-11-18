@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>校园二手交易智能平台</title>
+    <!-- 防闪烁：首屏渲染前根据 localStorage（ct-theme）或系统设置决定是否加 html.dark -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('ct-theme');
+          var dark = t === 'dark' || ((!t || t === 'auto') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var el = document.documentElement;
+          if (dark) el.classList.add('dark');
+          el.style.colorScheme = dark ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
+    <meta name="color-scheme" content="light dark" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

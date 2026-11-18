@@ -1,0 +1,233 @@
+/* ==========================================================================
+   校园二手交易智能平台 · Design Tokens  v1.0
+   品牌主题：「Iris 晴空紫」—— 鸢尾紫主色 + 珊瑚橙强调 + 薄荷绿点缀
+   用法：在 main.js 中于 element-plus 样式之后引入（详见 design-system.md §8）
+   暗色：<html class="dark">（与 Element Plus dark css-vars 一致）
+         同时兼容 <html data-theme="dark">
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- 1. 品牌色 Brand ---------- */
+  --ct-primary: #5b5cf0;          /* Iris 鸢尾紫：主按钮、链接、选中态 */
+  --ct-primary-hover: #7173f5;
+  --ct-primary-active: #494ac0;
+  --ct-primary-soft: #efeffe;      /* 浅底：标签、选中背景 */
+  --ct-primary-soft-2: #dedefc;
+
+  --ct-accent: #ff6b4a;            /* Coral 珊瑚橙：价格、立即下单、热门 */
+  --ct-accent-hover: #ff8366;
+  --ct-accent-soft: #fff0eb;
+
+  --ct-mint: #14c9a2;              /* Mint 薄荷绿：同校/已认证/环保 */
+  --ct-mint-soft: #e3faf4;
+  --ct-sun: #ffc53d;               /* Sun 柠檬黄：推荐理由、徽章高光 */
+  --ct-sun-soft: #fff7df;
+  --ct-sky: #38bdf8;               /* Sky 天蓝：图表辅助、信息插画 */
+
+  /* 品牌渐变 */
+  --ct-gradient-brand: linear-gradient(135deg, #5b5cf0 0%, #8b5cf6 55%, #c264f0 100%);
+  --ct-gradient-hot: linear-gradient(135deg, #ff6b4a 0%, #ff9a5a 100%);
+  --ct-gradient-fresh: linear-gradient(135deg, #14c9a2 0%, #38bdf8 100%);
+  --ct-gradient-mesh:
+    radial-gradient(60% 80% at 10% 10%, rgba(91, 92, 240, .18) 0, transparent 60%),
+    radial-gradient(50% 70% at 90% 0%, rgba(255, 107, 74, .14) 0, transparent 60%),
+    radial-gradient(60% 60% at 80% 100%, rgba(20, 201, 162, .14) 0, transparent 60%);
+
+  /* ---------- 2. 语义色 Semantic ---------- */
+  --ct-success: #16b07b;
+  --ct-warning: #f5a524;
+  --ct-danger: #f04452;
+  --ct-info: #8a8fa3;
+
+  /* ---------- 3. 中性色 Neutral（带一点紫调的冷灰） ---------- */
+  --ct-gray-0: #ffffff;
+  --ct-gray-25: #fafbfe;
+  --ct-gray-50: #f5f6fb;
+  --ct-gray-100: #eceef6;
+  --ct-gray-200: #dfe2ee;
+  --ct-gray-300: #c6cadb;
+  --ct-gray-400: #9ba1b7;
+  --ct-gray-500: #6f758c;
+  --ct-gray-600: #50566c;
+  --ct-gray-700: #363b50;
+  --ct-gray-800: #23273b;
+  --ct-gray-900: #141728;
+
+  /* ---------- 4. 语义化表面 Surface（组件只用这一层） ---------- */
+  --ct-bg: #f5f6fb;                /* 页面底 */
+  --ct-bg-mesh: var(--ct-gradient-mesh);
+  --ct-surface: #ffffff;           /* 卡片 */
+  --ct-surface-2: #fafbfe;         /* 卡片内次级块 */
+  --ct-surface-sunken: #eff1f8;    /* 输入框底 / 凹陷区域 */
+  --ct-glass: rgba(255, 255, 255, .68);
+  --ct-glass-border: rgba(255, 255, 255, .7);
+  --ct-border: #e6e8f2;
+  --ct-border-strong: #d3d7e6;
+  --ct-text: #141728;              /* 主文字 */
+  --ct-text-2: #50566c;            /* 次级文字 */
+  --ct-text-3: #8a8fa3;            /* 辅助 / 占位 */
+  --ct-text-inverse: #ffffff;
+  --ct-price: var(--ct-accent);
+  --ct-overlay: rgba(20, 23, 40, .45);
+
+  /* ---------- 5. 字体 Typography ---------- */
+  --ct-font-sans: "Inter Variable", "Inter", "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Hiragino Sans GB",
+    "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans SC",
+    system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ct-font-num: "Inter Variable", "Inter", "DIN Alternate", "SF Pro Display", "Roboto", var(--ct-font-sans);
+  --ct-font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* 字号阶梯（1.2 ~ 1.25 比例，移动端取下一级） */
+  --ct-fs-display: 44px;   /* Hero 标题 */
+  --ct-fs-h1: 32px;        /* 页面标题 */
+  --ct-fs-h2: 24px;        /* 区块标题 */
+  --ct-fs-h3: 20px;        /* 卡片大标题 / 详情商品名 */
+  --ct-fs-h4: 17px;        /* 小节标题 */
+  --ct-fs-body-lg: 16px;
+  --ct-fs-body: 14px;      /* 正文基准 */
+  --ct-fs-caption: 12px;   /* 辅助说明 / 时间 */
+  --ct-fs-micro: 11px;     /* 徽章 */
+  --ct-fs-price-lg: 36px;  /* 详情页价格 */
+  --ct-fs-price: 22px;     /* 卡片价格 */
+
+  --ct-lh-tight: 1.2;      /* 标题 */
+  --ct-lh-snug: 1.4;       /* 卡片标题 */
+  --ct-lh-normal: 1.6;     /* 正文（中文建议 1.6~1.75） */
+  --ct-lh-loose: 1.75;     /* 长描述 */
+
+  --ct-fw-regular: 400;
+  --ct-fw-medium: 500;
+  --ct-fw-semibold: 600;
+  --ct-fw-bold: 700;
+  --ct-fw-heavy: 800;
+
+  --ct-ls-tight: -0.02em;  /* 大标题、价格数字 */
+
+  /* ---------- 6. 圆角 Radius ---------- */
+  --ct-radius-xs: 6px;     /* 徽章、小标签 */
+  --ct-radius-sm: 10px;    /* 输入框、小按钮 */
+  --ct-radius-md: 14px;    /* 按钮、下拉 */
+  --ct-radius-lg: 20px;    /* 商品卡片、面板 */
+  --ct-radius-xl: 28px;    /* Hero、大容器、弹窗 */
+  --ct-radius-pill: 999px; /* 胶囊按钮、搜索框、Chip */
+
+  /* ---------- 7. 阴影层级 Elevation ---------- */
+  --ct-shadow-0: none;
+  --ct-shadow-1: 0 1px 2px rgba(20, 23, 40, .04), 0 1px 3px rgba(20, 23, 40, .06);          /* 静止卡片 */
+  --ct-shadow-2: 0 4px 12px -2px rgba(20, 23, 40, .06), 0 2px 6px -2px rgba(20, 23, 40, .05); /* 浮起 */
+  --ct-shadow-3: 0 16px 32px -12px rgba(39, 40, 120, .18), 0 6px 12px -6px rgba(20, 23, 40, .08); /* hover 卡片 */
+  --ct-shadow-4: 0 28px 60px -20px rgba(39, 40, 120, .30), 0 10px 24px -10px rgba(20, 23, 40, .12); /* 弹窗/抽屉 */
+  --ct-shadow-glow: 0 10px 30px -8px rgba(91, 92, 240, .55);  /* 主按钮发光 */
+  --ct-shadow-glow-hot: 0 10px 30px -8px rgba(255, 107, 74, .55);
+  --ct-ring: 0 0 0 4px rgba(91, 92, 240, .18);                 /* 焦点环 */
+
+  /* ---------- 8. 间距 Spacing（4 / 8 基准） ---------- */
+  --ct-space-0: 0;
+  --ct-space-1: 4px;
+  --ct-space-2: 8px;
+  --ct-space-3: 12px;
+  --ct-space-4: 16px;
+  --ct-space-5: 20px;
+  --ct-space-6: 24px;
+  --ct-space-8: 32px;
+  --ct-space-10: 40px;
+  --ct-space-12: 48px;
+  --ct-space-16: 64px;
+  --ct-space-20: 80px;
+
+  /* ---------- 9. 布局 Layout ---------- */
+  --ct-container: 1280px;
+  --ct-container-pad: 24px;
+  --ct-header-h: 68px;
+  --ct-sidebar-w: 248px;
+  --ct-gutter: 24px;
+  --ct-z-header: 100;
+  --ct-z-dropdown: 1000;
+  --ct-z-modal: 2000;
+  --ct-z-toast: 3000;
+
+  /* 断点（CSS 变量不能用于 @media，此处仅作文档参考；SCSS 用 $bp-*） */
+  --ct-bp-sm: 640px;
+  --ct-bp-md: 768px;
+  --ct-bp-lg: 1024px;
+  --ct-bp-xl: 1280px;
+  --ct-bp-2xl: 1536px;
+
+  /* ---------- 10. 动效 Motion（详见 motion.md） ---------- */
+  --ct-ease-standard: cubic-bezier(.2, 0, 0, 1);        /* 通用 */
+  --ct-ease-out: cubic-bezier(.16, 1, .3, 1);           /* 进入（expo-out） */
+  --ct-ease-in: cubic-bezier(.4, 0, 1, 1);              /* 离开 */
+  --ct-ease-spring: cubic-bezier(.34, 1.56, .64, 1);    /* 回弹（back-out） */
+  --ct-ease-emphasized: cubic-bezier(.2, .8, .2, 1);
+  --ct-dur-instant: 100ms;
+  --ct-dur-fast: 160ms;
+  --ct-dur-base: 240ms;
+  --ct-dur-slow: 360ms;
+  --ct-dur-slower: 560ms;
+}
+
+/* ==========================================================================
+   暗色模式 Dark
+   ========================================================================== */
+html.dark,
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ct-primary: #7b7cff;
+  --ct-primary-hover: #9596ff;
+  --ct-primary-active: #5b5cbc;
+  --ct-primary-soft: #1d1f3d;
+  --ct-primary-soft-2: #2a2c58;
+
+  --ct-accent: #ff7a5c;
+  --ct-accent-hover: #ff9478;
+  --ct-accent-soft: #33201f;
+  --ct-mint: #2ee0b8;
+  --ct-mint-soft: #11302c;
+  --ct-sun: #ffd166;
+  --ct-sun-soft: #332b17;
+
+  --ct-gradient-brand: linear-gradient(135deg, #6d6eff 0%, #9b6bff 55%, #d07af5 100%);
+  --ct-gradient-mesh:
+    radial-gradient(60% 80% at 10% 10%, rgba(123, 124, 255, .20) 0, transparent 60%),
+    radial-gradient(50% 70% at 90% 0%, rgba(255, 122, 92, .10) 0, transparent 60%),
+    radial-gradient(60% 60% at 80% 100%, rgba(46, 224, 184, .10) 0, transparent 60%);
+
+  --ct-success: #2fcb93;
+  --ct-warning: #f7b648;
+  --ct-danger: #ff5c69;
+  --ct-info: #9aa0b8;
+
+  --ct-bg: #0b0d18;
+  --ct-surface: #14172a;
+  --ct-surface-2: #191c32;
+  --ct-surface-sunken: #0f1222;
+  --ct-glass: rgba(20, 23, 42, .62);
+  --ct-glass-border: rgba(255, 255, 255, .08);
+  --ct-border: #252a44;
+  --ct-border-strong: #343a5a;
+  --ct-text: #eceefa;
+  --ct-text-2: #a9aec8;
+  --ct-text-3: #6f7593;
+  --ct-overlay: rgba(0, 0, 0, .6);
+
+  --ct-shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+  --ct-shadow-2: 0 4px 14px -2px rgba(0, 0, 0, .45);
+  --ct-shadow-3: 0 18px 40px -12px rgba(0, 0, 0, .65), 0 0 0 1px rgba(123, 124, 255, .18);
+  --ct-shadow-4: 0 30px 70px -20px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 255, 255, .06);
+  --ct-shadow-glow: 0 10px 34px -8px rgba(123, 124, 255, .6);
+  --ct-ring: 0 0 0 4px rgba(123, 124, 255, .28);
+}
+
+/* 动效降级：用户系统开启“减少动态效果”时统一压缩时长 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ct-dur-instant: 0ms;
+    --ct-dur-fast: 0ms;
+    --ct-dur-base: 0ms;
+    --ct-dur-slow: 0ms;
+    --ct-dur-slower: 0ms;
+  }
+}

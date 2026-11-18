@@ -1,0 +1,131 @@
+/*
+ * 全局样式（Iris Design System v1.0）
+ * 引入顺序见 main.js：element-plus → dark css-vars → tokens.css → element-plus-theme.css → 本文件
+ * 设计变量统一在 tokens.css（--ct-*），Element Plus 主色梯度在 element-plus-theme.css。
+ * 下面的 --color-* 是旧变量，保留为指向新 token 的别名，旧组件不改也能换上新皮肤；
+ * 阶段 3 重构页面时逐步改为直接使用 --ct-*。
+ */
+:root,
+html.dark,
+html[data-theme='dark'] {
+  --color-primary: var(--ct-primary);
+  --color-primary-light: var(--ct-primary-hover);
+  --color-primary-dark: var(--ct-primary-active);
+  --color-primary-bg: var(--ct-primary-soft);
+  --color-text: var(--ct-text);
+  --color-text-secondary: var(--ct-text-2);
+  --color-border: var(--ct-border);
+  --color-bg: var(--ct-bg);
+  --color-surface: var(--ct-surface);
+  --header-height: var(--ct-header-h);
+
+  /* 新增别名：原先各页面写死的颜色统一收口到这里 */
+  --color-price: var(--ct-price);
+  --color-danger: var(--ct-danger);
+  --color-warning: var(--ct-warning);
+  --color-success: var(--ct-success);
+  --color-mint: var(--ct-mint);
+  --color-surface-2: var(--ct-surface-2);
+  --color-surface-sunken: var(--ct-surface-sunken);
+  --color-text-tertiary: var(--ct-text-3);
+}
+
+/* 阶段 4：浅色底上的「墨色」文字（柠檬/薄荷徽章、提示条），暗色下改用提亮后的品牌色，保证对比度 */
+:root {
+  --ct-sun-ink: #946100; /* 柠檬黄底上的文字，对 --ct-sun-soft 对比度 ≈4.9:1 */
+  --ct-mint-ink: #0b8f72;
+}
+
+html.dark,
+html[data-theme='dark'] {
+  --ct-sun-ink: var(--ct-sun);
+  --ct-mint-ink: var(--ct-mint);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--ct-font-sans);
+  font-size: var(--ct-fs-body);
+  line-height: var(--ct-lh-normal);
+  color: var(--ct-text);
+  background: var(--ct-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--ct-primary);
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--ct-primary-soft-2);
+  color: var(--ct-text);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ct-ring);
+}
+
+/* 数字（价格、统计）对齐 */
+.num {
+  font-family: var(--ct-font-num);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ct-ls-tight);
+}
+
+.page-placeholder {
+  padding: 24px;
+}
+
+.page-placeholder__title {
+  margin: 0 0 16px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* motion.md §12：减少动态效果时的全局兜底 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* 换肤修正：输入框改为凹陷底后，字数统计不再需要白底 */
+.el-input .el-input__count .el-input__count-inner,
+.el-textarea .el-input__count {
+  background: transparent;
+}
+
+/* 换肤修正：主按钮改为渐变底后，禁用态需要明显变淡、去掉发光 */
+.el-button--primary.is-disabled:not(.is-plain):not(.is-text):not(.is-link),
+.el-button--primary.is-disabled:not(.is-plain):not(.is-text):not(.is-link):hover {
+  opacity: 0.45;
+  box-shadow: none;
+  filter: none;
+  transform: none;
+}

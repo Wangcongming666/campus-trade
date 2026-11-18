@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>商品详情 · 校园闲置 高保真原型</title>
+<link rel="stylesheet" href="../tokens.css"><link rel="stylesheet" href="assets/proto.css">
+<style>
+.crumb{display:flex;align-items:center;gap:6px;margin:24px 0 20px;color:var(--ct-text-3);font-size:13px}
+.crumb a:hover{color:var(--ct-primary)} .crumb b{color:var(--ct-text-2);font-weight:600}
+.detail{display:grid;grid-template-columns:7fr 5fr;gap:32px;align-items:start}
+.gallery{display:grid;grid-template-columns:84px 1fr;gap:16px}
+.thumbs{display:flex;flex-direction:column;gap:12px}
+.thumbs button{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;outline:2px solid transparent;outline-offset:2px;transition:outline-color var(--ct-dur-base),transform var(--ct-dur-base) var(--ct-ease-out),opacity var(--ct-dur-base);opacity:.65}
+.thumbs button:hover{opacity:1;transform:scale(1.04)}
+.thumbs button.on{outline-color:var(--ct-primary);opacity:1}
+.thumbs .art,.thumbs [data-art]{position:absolute;inset:0}
+.thumbs .art-svg{width:62%;height:62%}
+.stage{position:relative;aspect-ratio:1/1;border-radius:var(--ct-radius-xl);overflow:hidden;box-shadow:var(--ct-shadow-3);cursor:zoom-in}
+.stage [data-art]{position:absolute;inset:0;transition:opacity .45s var(--ct-ease-out),transform .6s var(--ct-ease-out)}
+.stage:hover .art-svg{transform:scale(1.12)}
+.stage .count{position:absolute;right:16px;bottom:16px;z-index:2}
+.stage .tl{position:absolute;left:16px;top:16px;z-index:2;display:flex;gap:8px}
+.stage-nav{position:absolute;inset:auto 16px 16px auto}
+.info{position:sticky;top:calc(var(--ct-header-h) + 20px);display:flex;flex-direction:column;gap:16px}
+.info-card{padding:28px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.title{margin-top:14px;font-size:var(--ct-fs-h3);font-weight:800;line-height:1.35;letter-spacing:-.01em}
+.price-box{margin-top:18px;display:flex;align-items:flex-end;gap:12px;padding:18px 20px;border-radius:var(--ct-radius-lg);background:linear-gradient(135deg,var(--ct-accent-soft),transparent)}
+.price-box .now{font-size:var(--ct-fs-price-lg);font-weight:800;color:var(--ct-price);line-height:1}
+.price-box .now small{font-size:20px}
+.price-box .save{margin-left:auto;align-self:center}
+.ai-price{margin-top:14px;padding:16px 18px;border-radius:var(--ct-radius-lg);border:1px dashed var(--ct-primary-soft-2);background:var(--ct-surface-2)}
+.ai-price .hd{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.ai-price .hd .ico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--ct-gradient-brand);color:#fff}
+.range{position:relative;height:10px;margin:40px 0 8px;border-radius:99px;background:var(--ct-surface-sunken)}
+.range .band{position:absolute;left:28%;right:22%;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--ct-mint),var(--ct-primary))}
+.range .mark{position:absolute;left:52%;top:50%;width:20px;height:20px;margin:-10px;border-radius:50%;background:var(--ct-surface);border:4px solid var(--ct-accent);box-shadow:var(--ct-shadow-2);animation:markIn .9s var(--ct-ease-spring) .3s both}
+@keyframes markIn{from{left:0;opacity:0}}
+.range .tip{position:absolute;left:52%;bottom:20px;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--ct-surface);background:var(--ct-text);padding:2px 8px;border-radius:6px;white-space:nowrap}
+.range-scale{display:flex;justify-content:space-between;font-size:12px;color:var(--ct-text-3)}
+.meta{margin-top:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.meta div{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:var(--ct-surface-2);font-size:13px}
+.meta svg{color:var(--ct-primary)} .meta b{display:block;font-size:13px} .meta span{color:var(--ct-text-3);font-size:12px}
+.actions{margin-top:22px;display:grid;grid-template-columns:auto 1fr 1.3fr;gap:12px}
+.like-big{position:relative;display:flex;align-items:center;gap:8px;height:52px;padding:0 18px;border-radius:var(--ct-radius-lg);background:var(--ct-surface-sunken);font-weight:700;color:var(--ct-text-2);transition:all var(--ct-dur-base)}
+.like-big .heart-host{position:relative;display:grid;place-items:center}
+.like-big.is-on{color:#ff3d6e;background:#ffe8ee} html.dark .like-big.is-on{background:#3a1826}
+.like-big.is-on svg.i{fill:#ff3d6e;animation:heartBeat .5s var(--ct-ease-spring)}
+.seller{padding:20px 24px;display:flex;align-items:center;gap:14px}
+.seller .nm{font-weight:800;display:flex;align-items:center;gap:6px}
+.seller .sub{font-size:12px;color:var(--ct-text-3);margin-top:2px}
+.ring{position:relative;width:60px;height:60px;margin-left:auto;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:6}
+.ring .bg{stroke:var(--ct-surface-sunken)}
+.ring .fg{stroke:url(#rg);stroke-linecap:round;stroke-dasharray:163;stroke-dashoffset:163;animation:ringFill 1.4s var(--ct-ease-out) .4s forwards}
+@keyframes ringFill{to{stroke-dashoffset:calc(163 - 163 * var(--v))}}
+html.shot .ring .fg{animation:none;stroke-dashoffset:calc(163 - 163 * var(--v))}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:16px;font-weight:800}
+.ring small{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--ct-text-3)}
+.safety{display:flex;gap:10px;padding:14px 18px;border-radius:var(--ct-radius-lg);background:var(--ct-mint-soft);font-size:13px;color:var(--ct-text-2)}
+.safety svg{color:var(--ct-mint);flex:none;margin-top:2px}
+.desc{margin-top:48px;display:grid;grid-template-columns:7fr 5fr;gap:32px}
+.tabs{display:flex;gap:28px;border-bottom:1px solid var(--ct-border);margin-bottom:22px;position:relative}
+.tabs button{padding:0 0 14px;font-weight:700;font-size:16px;color:var(--ct-text-3)}
+.tabs button.on{color:var(--ct-text)}
+.tabs .bar{position:absolute;bottom:-1px;left:0;width:64px;height:3px;border-radius:3px;background:var(--ct-gradient-brand)}
+.desc p{line-height:var(--ct-lh-loose);color:var(--ct-text-2)}
+.spec{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.review{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--ct-border)}
+.review:last-child{border:0}
+.review .stars{color:#ffb020;display:flex;gap:1px} .review .stars svg{fill:#ffb020;width:13px;height:13px}
+.review p{font-size:13px;margin-top:4px}
+</style>
+</head>
+<body>
+<div data-app-header></div>
+<main class="page"><div class="container">
+  <div class="crumb"><a href="index.html">首页</a><i data-i="right"></i><a href="#">数码电子</a><i data-i="right"></i><b>平板电脑</b></div>
+  <section class="detail">
+    <div class="gallery" data-reveal>
+      <div class="thumbs" id="thumbs">
+        <button class="on" data-g="#c7d2fe,#6366f1" data-a="tablet"><div data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div></button>
+        <button data-g="#e9d5ff,#a855f7" data-a="tablet"><div data-art="tablet" style="--g1:#e9d5ff;--g2:#a855f7"></div></button>
+        <button data-g="#bae6fd,#0ea5e9" data-a="laptop"><div data-art="laptop" style="--g1:#bae6fd;--g2:#0ea5e9"></div></button>
+        <button data-g="#fde68a,#f59e0b" data-a="box"><div data-art="keyboard" style="--g1:#fde68a;--g2:#f59e0b"></div></button>
+        <button data-g="#fecdd3,#f43f5e" data-a="tablet"><div data-art="tablet" style="--g1:#fecdd3;--g2:#f43f5e"></div></button>
+      </div>
+      <div class="stage">
+        <div id="stageArt" data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div>
+        <div class="tl"><span class="badge badge-glass"><i data-i="camera"></i>实拍 5 张</span><span class="badge badge-glass">演示图</span></div>
+        <span class="count badge badge-glass num" id="stageCount">1 / 5</span>
+      </div>
+    </div>
+
+    <aside class="info">
+      <div class="card info-card" data-reveal style="--i:1">
+        <div class="tags"><span class="badge badge-mint"><i data-i="check"></i>在售</span><span class="badge badge-primary">95新</span><span class="badge badge-gray"><i data-i="handshake"></i>可面交</span><span class="badge badge-sun">同校</span></div>
+        <h1 class="title">iPad Air 5 64G 星光色 带原装二代笔 考研党自用，无磕碰</h1>
+        <div class="price-box">
+          <span class="now num"><small>¥</small>2,680</span>
+          <span class="price__origin num" style="font-size:14px;margin-bottom:4px">原价 ¥4,799</span>
+          <span class="save badge badge-hot" style="height:26px;font-size:12px">省 44%</span>
+        </div>
+        <div class="ai-price">
+          <div class="hd"><span class="ico"><i data-i="sparkle"></i></span>智能定价参考<span class="faint" style="font-weight:500;margin-left:auto">同类目 · 相近成色 · 32 件在售/成交</span></div>
+          <div class="range"><div class="band"></div><span class="tip">当前 ¥2,680</span><span class="mark"></span></div>
+          <div class="range-scale num"><span>¥1,900</span><span style="color:var(--ct-mint);font-weight:700">建议区间 ¥2,450 – ¥2,900</span><span>¥3,400</span></div>
+        </div>
+        <div class="meta">
+          <div><i data-i="pin"></i><p><b>东区 · 3号宿舍楼</b><span>交易地点</span></p></div>
+          <div><i data-i="clock"></i><p><b>12 分钟前</b><span>发布时间</span></p></div>
+          <div><i data-i="eye"></i><p><b class="num">326 次</b><span>浏览</span></p></div>
+          <div><i data-i="message"></i><p><b class="num">8 人</b><span>正在咨询</span></p></div>
+        </div>
+        <div class="actions">
+          <button class="like-big" data-like="toast"><span class="heart-host"><i data-i="heart"></i></span><span class="num" data-like-count>38</span></button>
+          <a class="btn btn-ghost btn-lg" href="chat.html"><i data-i="message"></i>聊一聊</a>
+          <button class="btn btn-hot btn-lg" data-order><i data-i="zap"></i>立即下单</button>
+        </div>
+      </div>
+      <div class="card seller" data-reveal style="--i:2">
+        <span class="avatar lg" style="--a1:#60a5fa;--a2:#6366f1">李<i class="online"></i></span>
+        <div><div class="nm">李同学 <span class="badge badge-mint"><i data-i="shield"></i>已认证</span></div><div class="sub">示例大学 · 计算机学院 · 成交 23 件 · 好评率 98%</div></div>
+        <div class="ring" style="--v:.98"><svg width="60" height="60"><defs><linearGradient id="rg"><stop offset="0" stop-color="#14c9a2"/><stop offset="1" stop-color="#5b5cf0"/></linearGradient></defs><circle class="bg" cx="30" cy="30" r="26"/><circle class="fg" cx="30" cy="30" r="26"/></svg><b class="num">98</b><small>信誉分</small></div>
+      </div>
+      <div class="safety" data-reveal style="--i:3"><i data-i="shield"></i><span>建议在校内公共场所当面验货交易，不要提前转账；遇到可疑情况可 <a href="#" style="color:var(--ct-primary);font-weight:700">举报</a>。</span></div>
+    </aside>
+  </section>
+
+  <section class="desc">
+    <div class="card card-pad" data-reveal>
+      <div class="tabs"><button class="on">商品描述</button><button>卖家评价 <span class="faint num">23</span></button><span class="bar"></span></div>
+      <p>去年 9 月在 Apple 教育优惠购入，一直贴膜带壳使用，屏幕和边框都没有划痕。电池健康 96%，配原装二代 Apple Pencil 和磁吸键盘壳（键盘壳有轻微使用痕迹）。考研结束出掉，可在东区 3 号楼楼下或图书馆当面验机。拒绝刀到 2,000 以下，诚心要的同学可小刀。</p>
+      <div class="spec"><span class="chip">容量 64G</span><span class="chip">WLAN 版</span><span class="chip">电池 96%</span><span class="chip">含 Apple Pencil 2</span><span class="chip">有购买凭证</span></div>
+    </div>
+    <div class="card card-pad" data-reveal style="--i:1">
+      <h3 style="font-weight:800;margin-bottom:6px">最近评价</h3>
+      <div class="review"><span class="avatar sm" style="--a1:#f9a8d4;--a2:#ec4899">王</span><div><b style="font-size:13px">王学姐</b> <span class="stars"><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i></span><p class="muted">东西和描述一致，学弟人很好，还帮忙重置了设备。</p></div></div>
+      <div class="review"><span class="avatar sm" style="--a1:#34d399;--a2:#059669">赵</span><div><b style="font-size:13px">赵同学</b> <span class="stars"><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i><i data-i="star"></i></span><p class="muted">准时面交，回复很快，推荐！</p></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2 class="section-title">看了这件的同学还在看</h2><p class="section-sub">相似商品推荐 · 与当前商品成色和价格相近</p></div><a class="link-more" href="index.html">更多<i data-i="right"></i></a></div>
+    <div class="goods-grid" id="sim" data-reveal-group></div>
+  </section>
+</div></main>
+<footer class="footer"><div class="container"><span>© 2026 校园二手交易智能平台 · 毕业设计原型</span><span>Iris Design System</span></div></footer>
+<script src="assets/data.js"></script>
+<script>
+  const G = CT_GOODS; document.getElementById('sim').innerHTML = [12,3,5,0].map(i => ctGoodsCard(i===0?{...G[i],t:'iPad 第九代 64G 银色 送保护壳',p:1580,o:2499,id:99}:G[i], { reason:false })).join('');
+</script>
+<script src="assets/proto.js"></script>
+<script>
+  // 图集切换：交叉淡入 + 轻微缩放
+  const stage = document.getElementById('stageArt'), btns = [...document.querySelectorAll('#thumbs button')];
+  btns.forEach((b, i) => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.remove('on')); b.classList.add('on');
+    const src = b.querySelector('[data-art]');
+    stage.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.97)' }], { duration: 160, easing: 'cubic-bezier(.4,0,1,1)' }).onfinish = () => {
+      stage.style.cssText = src.getAttribute('style'); stage.querySelector('.art-svg').outerHTML = ctArt(src.dataset.art);
+      stage.animate([{ opacity: 0, transform: 'scale(1.03)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 360, easing: 'cubic-bezier(.16,1,.3,1)' });
+    };
+    document.getElementById('stageCount').textContent = `${i + 1} / 5`;
+  }));
+</script>
+</body>
+</html>

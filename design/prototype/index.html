@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>首页 · 校园闲置 高保真原型</title>
+<link rel="stylesheet" href="../tokens.css"><link rel="stylesheet" href="assets/proto.css">
+<style>
+.hero{margin-top:28px;display:grid;grid-template-columns:7fr 5fr;gap:24px;align-items:stretch}
+.hero-main{position:relative;overflow:hidden;border-radius:var(--ct-radius-xl);padding:48px 48px 40px;background:var(--ct-surface);border:1px solid var(--ct-border);box-shadow:var(--ct-shadow-2)}
+.hero-main::before{content:"";position:absolute;inset:0;background:var(--ct-gradient-mesh);opacity:1}
+.hero-main::after{content:"";position:absolute;width:420px;height:420px;right:-160px;top:-180px;border-radius:50%;background:conic-gradient(from 120deg,#5b5cf0,#c264f0,#ff6b4a,#14c9a2,#5b5cf0);filter:blur(70px);opacity:.25;animation:spin 18s linear infinite}
+.hero-main>*{position:relative;z-index:1}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border-radius:99px;background:var(--ct-surface);border:1px solid var(--ct-border);font-size:13px;font-weight:600;color:var(--ct-text-2);box-shadow:var(--ct-shadow-1)}
+.eyebrow .live{width:22px;height:22px;border-radius:50%;background:var(--ct-mint-soft);display:grid;place-items:center}
+.eyebrow .live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ct-mint);animation:pulse 1.6s infinite}
+.hero h1{margin-top:22px;font-size:var(--ct-fs-display);line-height:1.15;font-weight:800;letter-spacing:-.025em}
+.hero p.lead{margin-top:14px;font-size:16px;color:var(--ct-text-2);max-width:560px}
+.hero-search{margin-top:28px;display:flex;align-items:center;gap:8px;height:64px;padding:8px 8px 8px 22px;border-radius:var(--ct-radius-pill);background:var(--ct-surface);border:1px solid var(--ct-border);box-shadow:var(--ct-shadow-3);max-width:600px;transition:box-shadow var(--ct-dur-base),border-color var(--ct-dur-base)}
+.hero-search:focus-within{border-color:var(--ct-primary);box-shadow:var(--ct-shadow-3),var(--ct-ring)}
+.hero-search .cat{display:flex;align-items:center;gap:4px;font-weight:700;padding-right:14px;border-right:1px solid var(--ct-border);white-space:nowrap}
+.hero-search input{flex:1;border:0;outline:0;background:none;font-size:16px;min-width:0}
+.hot{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px}
+.hot .chip{height:30px;background:rgba(255,255,255,.6)} html.dark .hot .chip{background:rgba(255,255,255,.04)}
+.stats{margin-top:34px;display:flex;gap:40px}
+.stats b{display:block;font-size:28px;font-weight:800}
+.stats>div>span{font-size:13px;color:var(--ct-text-3)}
+.hero-side{position:relative;border-radius:var(--ct-radius-xl);background:var(--ct-gradient-brand);overflow:hidden;min-height:480px;perspective:1000px;box-shadow:var(--ct-shadow-glow)}
+.hero-side::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.35),transparent 40%),radial-gradient(circle at 80% 90%,rgba(255,107,74,.55),transparent 45%)}
+.hero-side .grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(circle at 50% 50%,#000 30%,transparent 75%)}
+.stack{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--rx,0)) rotateY(var(--ry,0));transition:transform .4s var(--ct-ease-out)}
+.float-card{position:absolute;width:210px;border-radius:22px;background:rgba(255,255,255,.92);color:#141728;padding:10px;box-shadow:0 30px 60px -20px rgba(20,23,40,.45);animation:floatY 6s ease-in-out infinite}
+.float-card .art{border-radius:16px;aspect-ratio:1.15}
+.float-card h4{font-size:13px;margin:10px 4px 4px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.float-card .p{margin:0 4px 4px;color:#ff6b4a;font-weight:800;font-size:18px}
+.fc1{left:34px;top:40px;width:190px;--r:-8deg;transform:rotate(-8deg)}
+.fc2{right:28px;top:170px;--r:7deg;animation-delay:-2s;transform:rotate(7deg);width:190px}
+.fc3{left:70px;bottom:28px;--r:-2deg;animation-delay:-4s;width:180px}
+.bubble-note{position:absolute;display:flex;align-items:center;gap:10px;padding:10px 14px 10px 10px;border-radius:18px;background:rgba(255,255,255,.95);color:#141728;font-size:12px;font-weight:600;box-shadow:0 20px 40px -14px rgba(20,23,40,.4);animation:floatY 5s ease-in-out infinite;white-space:nowrap}
+.bubble-note small{display:block;color:#8a8fa3;font-weight:500}
+.bn1{right:24px;top:30px;animation-delay:-1s}
+.bn2{right:36px;bottom:70px;animation-delay:-3s}
+.bn2 .ico{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#fff7df;color:#d48806}
+.ticker{margin-top:24px;display:flex;align-items:center;gap:14px;height:52px;padding:0 8px 0 18px;border-radius:var(--ct-radius-pill)}
+.ticker .lbl{display:flex;align-items:center;gap:6px;font-weight:800;color:var(--ct-accent);white-space:nowrap}
+.ticker .vp{flex:1;overflow:hidden;height:24px;position:relative}
+.ticker ul{list-style:none;margin:0;padding:0;animation:tick 9s var(--ct-ease-emphasized) infinite}
+.ticker li{height:24px;line-height:24px;color:var(--ct-text-2);white-space:nowrap}
+@keyframes tick{0%,28%{transform:translateY(0)}33%,61%{transform:translateY(-24px)}66%,94%{transform:translateY(-48px)}100%{transform:translateY(-72px)}}
+.cats{display:grid;grid-template-columns:repeat(8,1fr);gap:16px}
+.cat-tile{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 8px;border-radius:var(--ct-radius-lg);background:var(--ct-surface);border:1px solid var(--ct-border);font-weight:700;font-size:14px;transition:transform var(--ct-dur-slow) var(--ct-ease-spring),box-shadow var(--ct-dur-slow)}
+.cat-tile:hover{transform:translateY(-6px) scale(1.02);box-shadow:var(--ct-shadow-3)}
+.cat-tile .ci{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 12px 24px -10px var(--c2);transition:transform var(--ct-dur-slow) var(--ct-ease-spring)}
+.cat-tile:hover .ci{transform:rotate(-8deg) scale(1.08)}
+.cat-tile .ci svg{width:26px;height:26px}
+.cat-tile small{font-size:12px;color:var(--ct-text-3);font-weight:500;margin-top:-6px}
+/* 推荐轮播 */
+.rec{position:relative;border-radius:var(--ct-radius-xl);padding:28px;background:linear-gradient(180deg,var(--ct-primary-soft),transparent 70%);border:1px solid var(--ct-border)}
+.rec-vp{overflow:hidden;margin:0 -8px;padding:8px 8px 16px}
+.rec-track{display:flex;gap:20px;transition:transform .7s var(--ct-ease-out)}
+.rec-track>.goods-card{flex:0 0 calc((100% - 60px)/4)}
+.rec-ctrl{display:flex;align-items:center;gap:8px}
+.rec-ctrl .icon-btn{background:var(--ct-surface);border:1px solid var(--ct-border)}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:4px}
+.dots i{width:8px;height:8px;border-radius:99px;background:var(--ct-border-strong);transition:width var(--ct-dur-slow) var(--ct-ease-out),background var(--ct-dur-slow);overflow:hidden;position:relative}
+.dots i.on{width:32px;background:var(--ct-primary-soft-2)}
+.dots i.on::after{content:"";position:absolute;inset:0;background:var(--ct-primary);transform-origin:left;animation:prog 4.5s linear forwards}
+@keyframes prog{from{transform:scaleX(0)}}
+.feed-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.filters{display:flex;gap:8px}
+.loading-row{margin-top:24px}
+.loading-cap{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:20px;color:var(--ct-text-3);font-size:13px}
+</style>
+</head>
+<body>
+<div data-app-header></div>
+<main class="page">
+<div class="container">
+  <section class="hero">
+    <div class="hero-main" data-reveal>
+      <span class="eyebrow"><span class="live"></span>示例大学 · <b class="num" data-count="2386">2386</b> 位同学正在出闲置</span>
+      <h1>毕业季好物<br><span class="grad-text">同校面交</span>，更安心</h1>
+      <p class="lead">学生认证 · 同校优先匹配 · 智能推荐和定价建议，让闲置在校园里快速流转。</p>
+      <label class="hero-search">
+        <span class="cat">全部分类<i data-i="down"></i></span>
+        <i data-i="search" class="faint"></i>
+        <input placeholder="试试搜索「考研数学」「iPad」「自行车」">
+        <button class="btn btn-primary btn-pill btn-lg" type="button">搜一搜</button>
+      </label>
+      <div class="hot"><span class="faint">大家在搜</span>
+        <span class="chip">🔥 高数教材</span><span class="chip">iPad</span><span class="chip">山地车</span><span class="chip">考研资料</span><span class="chip">台灯</span>
+      </div>
+      <div class="stats">
+        <div><b class="num" data-count="12480">12,480</b><span>件闲置在售</span></div>
+        <div><b class="num" data-count="326">326</b><span>今日新上架</span></div>
+        <div><b class="num"><span data-count="2.3">2.3</span>h</b><span>平均成交时长</span></div>
+      </div>
+    </div>
+    <div class="hero-side" data-tilt data-reveal style="--i:2">
+      <div class="grid-lines"></div>
+      <div class="stack">
+        <div class="float-card fc1"><div data-art="tablet" style="--g1:#c7d2fe;--g2:#6366f1"></div><h4>iPad Air 5 星光色</h4><div class="p num">¥2,680</div></div>
+        <div class="float-card fc2"><div data-art="bike" style="--g1:#a7f3d0;--g2:#10b981"></div><h4>捷安特山地车</h4><div class="p num">¥680</div></div>
+        <div class="float-card fc3"><div data-art="headphones" style="--g1:#fed7aa;--g2:#f97316"></div><h4>索尼降噪耳机</h4><div class="p num">¥1,050</div></div>
+        <div class="bubble-note bn1"><span class="avatar sm" style="--a1:#60a5fa;--a2:#6366f1">李</span><div>李同学 收藏了 iPad<small>刚刚 · 东区</small></div></div>
+        <div class="bubble-note bn2"><span class="ico"><i data-i="sparkle"></i></span><div>智能定价建议 ¥45 – ¥60<small>参考同类 32 件</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker card" data-reveal>
+    <span class="lbl"><i data-i="mega"></i>公告</span>
+    <div class="vp"><ul>
+      <li>毕业季跳蚤市集将于周六在东区广场举办，欢迎摆摊（示例公告）</li>
+      <li>平台已上线「智能定价建议」，发布时可一键参考同类价格</li>
+      <li>交易请优先当面验货，谨防站外转账</li>
+      <li>毕业季跳蚤市集将于周六在东区广场举办，欢迎摆摊（示例公告）</li>
+    </ul></div>
+    <a class="btn btn-sm btn-soft btn-pill" href="#">查看全部</a>
+  </div>
+
+  <section class="section">
+    <div class="section-head"><div><h2 class="section-title">逛逛分类</h2><p class="section-sub">按开学 / 毕业季节律整理的热门品类</p></div></div>
+    <div class="cats" data-reveal-group>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#818cf8;--c2:#5b5cf0"><i data-i="laptop"></i></span>数码电子<small>3,204 件</small></a>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#fcd34d;--c2:#f59e0b"><i data-i="book"></i></span>教材书籍<small>4,518 件</small></a>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#5eead4;--c2:#14b8a6"><i data-i="home"></i></span>生活日用<small>1,976 件</small></a>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#86efac;--c2:#22c55e"><i data-i="bike"></i></span>运动户外<small>842 件</small></a>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#f9a8d4;--c2:#ec4899"><i data-i="shirt"></i></span>服饰鞋包<small>1,130 件</small></a>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#fca5a5;--c2:#ef4444"><i data-i="music"></i></span>乐器文艺<small>317 件</small></a>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#c4b5fd;--c2:#8b5cf6"><i data-i="ticket"></i></span>票券卡券<small>205 件</small></a>
+      <a class="cat-tile" href="#"><span class="ci" style="--c1:#fdba74;--c2:#ff6b4a"><i data-i="gift"></i></span>免费送<small>96 件</small></a>
+    </div>
+  </section>
+
+  <section class="section rec" data-reveal>
+    <div class="section-head">
+      <div><h2 class="section-title"><i data-i="sparkle" style="color:var(--ct-primary)"></i><span>猜你喜欢</span><span class="badge badge-primary">智能推荐</span></h2>
+        <p class="section-sub">基于你的浏览、收藏、咨询和兴趣分类实时生成，每条都附推荐理由</p></div>
+      <div class="rec-ctrl"><button class="icon-btn" data-prev aria-label="上一组"><i data-i="left"></i></button><button class="icon-btn" data-next aria-label="下一组"><i data-i="right"></i></button></div>
+    </div>
+    <div class="rec-vp"><div class="rec-track" id="recTrack"></div></div>
+    <div class="dots" id="recDots"></div>
+  </section>
+
+  <section class="section" id="feed">
+    <div class="feed-bar">
+      <h2 class="section-title">最新发布</h2>
+      <div class="seg"><button class="is-active">推荐</button><button>最新</button><button>附近宿舍区</button><button>免费送</button></div>
+    </div>
+    <div class="filters" data-chips style="margin-bottom:20px">
+      <span class="chip is-active">全部</span><span class="chip">¥50 以下</span><span class="chip">95新以上</span><span class="chip">可面交</span><span class="chip">已认证卖家</span><span class="chip"><i data-i="filter"></i>更多筛选</span>
+    </div>
+    <div class="goods-grid" id="feedGrid" data-reveal-group></div>
+    <div class="goods-grid loading-row" aria-label="加载态骨架屏">
+      <div class="sk-card"><div class="sk sk-img"></div><div class="sk-body"><div class="sk" style="height:14px"></div><div class="sk" style="height:14px;width:60%"></div><div class="sk" style="height:22px;width:40%"></div></div></div>
+      <div class="sk-card"><div class="sk sk-img"></div><div class="sk-body"><div class="sk" style="height:14px"></div><div class="sk" style="height:14px;width:70%"></div><div class="sk" style="height:22px;width:35%"></div></div></div>
+      <div class="sk-card"><div class="sk sk-img"></div><div class="sk-body"><div class="sk" style="height:14px"></div><div class="sk" style="height:14px;width:50%"></div><div class="sk" style="height:22px;width:45%"></div></div></div>
+      <div class="sk-card"><div class="sk sk-img"></div><div class="sk-body"><div class="sk" style="height:14px"></div><div class="sk" style="height:14px;width:65%"></div><div class="sk" style="height:22px;width:30%"></div></div></div>
+    </div>
+    <p class="loading-cap"><span class="spinner" style="border-color:var(--ct-border-strong);border-top-color:var(--ct-primary)"></span>正在为你加载更多闲置…（无限滚动加载态示意）</p>
+  </section>
+</div>
+</main>
+<footer class="footer"><div class="container"><span>© 2026 校园二手交易智能平台 · 毕业设计原型</span><span>Vue 3 + Element Plus · Iris Design System</span></div></footer>
+
+<script src="assets/data.js"></script>
+<script>
+  const G = window.CT_GOODS;
+  document.getElementById('recTrack').innerHTML = [0,3,1,12,4,7,5,8].map(i => ctGoodsCard(G[i], { reason: true, liked: i===3 })).join('');
+  document.getElementById('feedGrid').innerHTML = [1,2,5,6,9,10,13,11].map(i => ctGoodsCard(G[i])).join('');
+</script>
+<script src="assets/proto.js"></script>
+<script>
+  // 推荐轮播：4 张一屏，4.5s 自动播放，hover 暂停
+  (() => {
+    const track = document.getElementById('recTrack'), dotsEl = document.getElementById('recDots');
+    const pages = Math.ceil(track.children.length / 4); let cur = 0, timer;
+    dotsEl.innerHTML = Array.from({ length: pages }, (_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('');
+    const go = i => { cur = (i + pages) % pages; const w = track.parentElement.clientWidth - 16 + 20;
+      track.style.transform = `translateX(${-cur * w}px)`;
+      [...dotsEl.children].forEach((d, k) => { d.classList.remove('on'); void d.offsetWidth; if (k === cur) d.classList.add('on'); }); };
+    const play = () => { clearInterval(timer); if (!document.documentElement.classList.contains('shot')) timer = setInterval(() => go(cur + 1), 4500); };
+    document.querySelector('[data-next]').onclick = () => { go(cur + 1); play(); };
+    document.querySelector('[data-prev]').onclick = () => { go(cur - 1); play(); };
+    track.addEventListener('pointerenter', () => clearInterval(timer)); track.addEventListener('pointerleave', play);
+    play();
+  })();
+</script>
+</body>
+</html>
