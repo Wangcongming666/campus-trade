@@ -30,6 +30,9 @@ public class GoodsSaveDTO {
     @Schema(description = "FACE（默认）/ EXPRESS / EITHER")
     @Pattern(regexp = Constants.TRADE_METHOD_REGEX, message = "交易方式取值为 FACE/EXPRESS/EITHER")
     private String tradeMethod;
+    @Schema(description = "交易地点（选填，≤100 字），如「东区食堂门口」；编辑时不传或传空串表示清空")
+    @Size(max = 100, message = "交易地点不超过 100 字")
+    private String tradeLocation;
     @NotNull(message = "分类不能为空")
     private Long categoryId;
     @Schema(description = "图片 URL 列表（POST /files/upload 返回的 url），按顺序，第一张为封面，最多 9 张")

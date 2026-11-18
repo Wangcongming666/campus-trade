@@ -21,6 +21,9 @@ public class Goods {
     @TableField("`condition`")
     private String condition;
     private String tradeMethod;
+    /** 交易地点（选填），如「东区食堂门口」；编辑时允许清空 */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    private String tradeLocation;
     private String status;
     private String coverUrl;
     private Integer viewCount;

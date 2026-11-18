@@ -27,6 +27,7 @@ DROP TABLE IF EXISTS `report`;
 DROP TABLE IF EXISTS `chat_message`;
 DROP TABLE IF EXISTS `chat_session`;
 DROP TABLE IF EXISTS `review`;
+DROP TABLE IF EXISTS `pay_order`;
 DROP TABLE IF EXISTS `trade_order`;
 DROP TABLE IF EXISTS `user_interest`;
 DROP TABLE IF EXISTS `user_behavior`;
@@ -154,6 +155,7 @@ CREATE TABLE `goods` (
   `original_price` DECIMAL(10,2)  DEFAULT NULL COMMENT '原价（选填），两位小数',
   `condition`      VARCHAR(16)    NOT NULL COMMENT '成色：NEW / LIKE_NEW / GOOD / FAIR / POOR',
   `trade_method`   VARCHAR(16)    NOT NULL DEFAULT 'FACE' COMMENT '交易方式：FACE / EXPRESS / EITHER',
+  `trade_location` VARCHAR(100)   NULL COMMENT '交易地点，如 东区食堂门口',
   `status`         VARCHAR(16)    NOT NULL DEFAULT 'PENDING_AUDIT' COMMENT 'PENDING_AUDIT / ON_SHELF / RESERVED / SOLD / OFF_SHELF / REJECTED',
   `cover_url`      VARCHAR(512)   DEFAULT NULL COMMENT '封面图 URL，通常取第一张商品图',
   `view_count`     INT            NOT NULL DEFAULT 0 COMMENT '浏览次数',
@@ -284,6 +286,35 @@ CREATE TABLE `trade_order` (
   CONSTRAINT `chk_order_not_self` CHECK (`buyer_id` <> `seller_id`),
   CONSTRAINT `chk_order_price` CHECK (`price` >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='交易订单';
+
+-- =============================================================================
+-- 9.1 pay_order  模拟支付单（每个订单同一时刻最多一张 WAITING 支付单）
+-- =============================================================================
+CREATE TABLE `pay_order` (
+  `id`          BIGINT         NOT NULL COMMENT '雪花主键',
+  `pay_no`      VARCHAR(32)    NOT NULL COMMENT '支付单号（对外暴露）',
+  `order_id`    BIGINT         NOT NULL COMMENT '订单 ID',
+  `user_id`     BIGINT         NOT NULL COMMENT '付款人（买家）ID',
+  `amount`      DECIMAL(10,2)  NOT NULL COMMENT '支付金额（订单价格快照）',
+  `status`      VARCHAR(16)    NOT NULL DEFAULT 'WAITING' COMMENT 'WAITING 待支付 / PAID 已支付 / CLOSED 已关闭',
+  `expire_time` DATETIME       NOT NULL COMMENT '过期时间（= 下单时间 + 超时时长，默认 15 分钟）',
+  `pay_time`    DATETIME       DEFAULT NULL COMMENT '支付时间',
+  `create_time` DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted`     TINYINT        NOT NULL DEFAULT 0 COMMENT '逻辑删除：0 否 1 是',
+  -- 生成列：仅 WAITING 且未删除时为 1，否则 NULL；配合唯一索引保证同一订单最多一张 WAITING 支付单
+  `waiting_flag` TINYINT GENERATED ALWAYS AS (IF(`status` = 'WAITING' AND `deleted` = 0, 1, NULL)) STORED
+                 COMMENT '生成列：WAITING 唯一性约束用，应用层不读写',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_pay_no` (`pay_no`),
+  UNIQUE KEY `uk_order_waiting` (`order_id`, `waiting_flag`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_status_expire` (`status`, `expire_time`),
+  CONSTRAINT `fk_pay_order` FOREIGN KEY (`order_id`) REFERENCES `trade_order` (`id`),
+  CONSTRAINT `fk_pay_user` FOREIGN KEY (`user_id`) REFERENCES `sys_user` (`id`),
+  CONSTRAINT `chk_pay_status` CHECK (`status` IN ('WAITING', 'PAID', 'CLOSED')),
+  CONSTRAINT `chk_pay_amount` CHECK (`amount` >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='模拟支付单';
 
 -- =============================================================================
 -- 10. review  评价（订单完成后双方各评价一次；50001 已评价，50002 订单未完成不可评价）

@@ -71,7 +71,16 @@ public enum ErrorCode {
     FILE_UPLOAD_FAILED(70003, "文件上传失败"),
 
     // 80000–80999 推荐与价格建议
-    PRICE_NO_DATA(80001, "该分类暂无价格数据，请填写原价后再试");
+    PRICE_NO_DATA(80001, "该分类暂无价格数据，请填写原价后再试"),
+
+    // 90000–90999 AI 图片识别
+    AI_IMAGE_REQUIRED(90001, "请上传图片文件或提供本站图片地址 imageUrl"),
+    AI_IMAGE_NOT_FOUND(90002, "图片不存在或已被删除"),
+
+    // 91000–91999 模拟支付
+    PAY_ORDER_NOT_FOUND(91001, "支付单不存在"),
+    PAY_ORDER_EXPIRED(91002, "支付已超时，订单已自动取消"),
+    PAY_ORDER_CLOSED(91003, "支付单已关闭");
 
     private final int code;
     private final String msg;

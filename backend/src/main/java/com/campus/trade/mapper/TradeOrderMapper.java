@@ -32,4 +32,13 @@ public interface TradeOrderMapper extends BaseMapper<TradeOrder> {
             "</script>"})
     int casStatus(@Param("id") Long id, @Param("fromStatuses") Collection<String> fromStatuses,
                   @Param("toStatus") String toStatus, @Param("reason") String reason);
+
+    /**
+     * 超时关单（条件更新）：仅当仍为 PENDING 且下单时间早于 deadline 时置为 CANCELLED。
+     * 与确认支付的 casStatus(PENDING→PAID) 竞争同一行锁，二者只有一个能成功。
+     */
+    @Update("UPDATE trade_order SET status = 'CANCELLED', cancel_reason = #{reason}, update_time = NOW() "
+            + "WHERE id = #{id} AND status = 'PENDING' AND create_time < #{deadline}")
+    int cancelIfTimeout(@Param("id") Long id, @Param("deadline") java.time.LocalDateTime deadline,
+                        @Param("reason") String reason);
 }

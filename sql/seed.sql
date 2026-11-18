@@ -155,23 +155,41 @@ INSERT INTO `goods_image` (`id`, `goods_id`, `url`, `name`, `sort_no`) VALUES
   (5000000000000001801, 4000000000000000018, 'https://picsum.photos/seed/goods18-1/600/600', 'goods18-1.jpg', 1),
   (5000000000000001901, 4000000000000000019, 'https://picsum.photos/seed/goods19-1/600/600', 'goods19-1.jpg', 1);
 
+-- ---------------------------------------------------------------- 交易地点（goods.trade_location，选填）
+UPDATE `goods` SET `trade_location` = '东区食堂门口' WHERE `id` IN (4000000000000000001, 4000000000000000006, 4000000000000000013);
+UPDATE `goods` SET `trade_location` = '图书馆一楼大厅' WHERE `id` IN (4000000000000000002, 4000000000000000004, 4000000000000000018);
+UPDATE `goods` SET `trade_location` = '二食堂门口' WHERE `id` IN (4000000000000000003, 4000000000000000017, 4000000000000000019);
+UPDATE `goods` SET `trade_location` = '西区宿舍 6 栋楼下' WHERE `id` IN (4000000000000000005, 4000000000000000007, 4000000000000000014);
+UPDATE `goods` SET `trade_location` = '体育馆南门' WHERE `id` IN (4000000000000000008, 4000000000000000010);
+UPDATE `goods` SET `trade_location` = '音乐楼 102 门口' WHERE `id` = 4000000000000000009;
+UPDATE `goods` SET `trade_location` = '北门快递站' WHERE `id` IN (4000000000000000011, 4000000000000000012, 4000000000000000015);
+
 -- ---------------------------------------------------------------- 兴趣分类示例
 INSERT INTO `user_interest` (`id`, `user_id`, `category_id`) VALUES
   (6000000000000000001, 2000000000000000002, 3000000000000000001),
   (6000000000000000002, 2000000000000000002, 3000000000000000002);
 
 -- ---------------------------------------------------------------- 订单（四种状态各一）
+-- 待付款订单 7000000000000000001 以导入时刻为下单时间：15 分钟内未支付会被定时任务自动取消（演示超时关单）
 INSERT INTO `trade_order` (`id`, `goods_id`, `buyer_id`, `seller_id`, `price`, `remark`, `status`, `cancel_reason`,
                            `pay_time`, `complete_time`, `create_time`)
 VALUES
   (7000000000000000001, 4000000000000000013, 2000000000000000002, 2000000000000000003, 99.00, '今晚图书馆门口交易',
-   'PENDING', NULL, NULL, NULL, DATE_SUB(NOW(), INTERVAL 2 HOUR)),
+   'PENDING', NULL, NULL, NULL, NOW()),
   (7000000000000000002, 4000000000000000014, 2000000000000000003, 2000000000000000002, 129.00, NULL,
    'PAID', NULL, DATE_SUB(NOW(), INTERVAL 1 DAY), NULL, DATE_SUB(NOW(), INTERVAL 1 DAY)),
   (7000000000000000003, 4000000000000000015, 2000000000000000002, 2000000000000000003, 35.00, NULL,
    'COMPLETED', NULL, DATE_SUB(NOW(), INTERVAL 5 DAY), DATE_SUB(NOW(), INTERVAL 4 DAY), DATE_SUB(NOW(), INTERVAL 5 DAY)),
   (7000000000000000004, 4000000000000000006, 2000000000000000002, 2000000000000000003, 79.00, NULL,
    'CANCELLED', '买家时间冲突，取消订单', NULL, NULL, DATE_SUB(NOW(), INTERVAL 3 DAY));
+
+-- ---------------------------------------------------------------- 模拟支付单（待付款订单对应一张 WAITING 支付单，有效期至下单后 15 分钟）
+INSERT INTO `pay_order` (`id`, `pay_no`, `order_id`, `user_id`, `amount`, `status`, `expire_time`, `pay_time`, `create_time`)
+VALUES
+  (7200000000000000001, 'P202611180000000001', 7000000000000000001, 2000000000000000002, 99.00, 'WAITING',
+   DATE_ADD(NOW(), INTERVAL 15 MINUTE), NULL, NOW()),
+  (7200000000000000002, 'P202611180000000002', 7000000000000000002, 2000000000000000003, 129.00, 'PAID',
+   DATE_ADD(DATE_SUB(NOW(), INTERVAL 1 DAY), INTERVAL 15 MINUTE), DATE_SUB(NOW(), INTERVAL 1 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY));
 
 -- ---------------------------------------------------------------- 评价（已完成订单，买家 user1 评卖家 user2，5 分 → 信誉分 100）
 INSERT INTO `review` (`id`, `order_id`, `from_user_id`, `to_user_id`, `score`, `content`, `create_time`) VALUES

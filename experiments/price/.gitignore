@@ -1,0 +1,4 @@
+# 模拟数据可由 scripts/gen_campus_data.py 逐字节重新生成
+data/
+build/
+__pycache__/

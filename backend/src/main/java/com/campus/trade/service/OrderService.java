@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
  * 订单与状态机（无 DELIVER）：
  * PENDING -PAY(买家)→ PAID -CONFIRM(买家)→ COMPLETED；PENDING/PAID -CANCEL|REFUND(买卖双方)→ CANCELLED。
  * 商品联动：下单 ON_SHELF→RESERVED；取消/退款 RESERVED→ON_SHELF；完成 RESERVED→SOLD。所有状态变更均为条件更新。
+ * 模拟支付见 {@link PayService}：下单生成 WAITING 支付单，15 分钟未支付自动取消（CANCELLED，商品恢复 ON_SHELF）。
  */
 @Slf4j
 @Service
@@ -49,6 +50,7 @@ public class OrderService {
     private final SysUserMapper userMapper;
     private final ReviewMapper reviewMapper;
     private final UserBehaviorService behaviorService;
+    private final PayService payService;
 
     @Transactional(rollbackFor = Exception.class)
     public OrderVO create(OrderCreateDTO dto) {
@@ -78,6 +80,8 @@ public class OrderService {
         o.setRemark(dto.getRemark());
         o.setStatus(OrderStatus.PENDING);
         orderMapper.insert(o);
+        // 同一事务生成 WAITING 模拟支付单（有效期 = 下单时间 + 15 分钟）
+        payService.createForNewOrder(orderMapper.selectById(o.getId()));
         Long goodsId = g.getId();
         afterCommit(() -> behaviorService.recordOrder(uid, goodsId));
         return toVOs(List.of(orderMapper.selectById(o.getId())), uid).get(0);
@@ -116,7 +120,12 @@ public class OrderService {
         switch (action) {
             case OrderAction.PAY -> {
                 requireRole(buyer);
+                if (OrderStatus.PENDING.equals(o.getStatus()) && payService.isTimedOut(o)) {
+                    payService.cancelIfTimeout(o.getId()); // 独立事务，已超时则关单
+                    throw new BizException(ErrorCode.PAY_ORDER_EXPIRED);
+                }
                 transit(o.getId(), Set.of(OrderStatus.PENDING), OrderStatus.PAID, null);
+                payService.onOrderPaid(o.getId());
             }
             case OrderAction.CONFIRM -> {
                 requireRole(buyer);
@@ -129,6 +138,7 @@ public class OrderService {
                 String reason = dto.getReason() == null || dto.getReason().isBlank()
                         ? (OrderAction.REFUND.equals(action) ? "退款" : "取消订单") : dto.getReason().trim();
                 transit(o.getId(), ACTIVE, OrderStatus.CANCELLED, reason);
+                payService.onOrderCancelled(o.getId());
                 if (goodsMapper.casStatus(o.getGoodsId(), GoodsStatus.RESERVED, GoodsStatus.ON_SHELF) == 0) {
                     log.warn("order {} cancelled but goods {} was not RESERVED", o.getId(), o.getGoodsId());
                 }
@@ -194,6 +204,8 @@ public class OrderService {
                         .eq(Review::getFromUserId, viewerId)
                         .in(Review::getOrderId, list.stream().map(TradeOrder::getId).toList()))
                 .stream().map(Review::getOrderId).collect(Collectors.toSet());
+        Map<Long, com.campus.trade.entity.PayOrder> waiting = payService.waitingByOrderIds(list.stream()
+                .filter(o -> OrderStatus.PENDING.equals(o.getStatus())).map(TradeOrder::getId).toList());
         List<OrderVO> result = new ArrayList<>();
         for (TradeOrder o : list) {
             OrderVO vo = new OrderVO();
@@ -214,6 +226,11 @@ public class OrderService {
             vo.setCompleteTime(o.getCompleteTime());
             vo.setCreateTime(o.getCreateTime());
             vo.setReviewed(reviewed.contains(o.getId()));
+            com.campus.trade.entity.PayOrder p = waiting.get(o.getId());
+            if (p != null) {
+                vo.setPayNo(p.getPayNo());
+                vo.setPayExpireTime(p.getExpireTime());
+            }
             result.add(vo);
         }
         return result;

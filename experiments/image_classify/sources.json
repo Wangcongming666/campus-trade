@@ -1,0 +1,17 @@
+{
+  "_comment": "每个叶子分类对应的 Wikimedia Commons 分类（只取该分类直属文件，不递归）。由 collect_samples.py 读取。",
+  "3000000000000000101": ["Category:Smartphones", "Category:Android smartphones", "Category:IPhone"],
+  "3000000000000000102": ["Category:Laptops", "Category:Tablet computers", "Category:IPad"],
+  "3000000000000000103": ["Category:Headphones", "Category:Earphones", "Category:Bluetooth speakers"],
+  "3000000000000000201": ["Category:Textbooks", "Category:Mathematics textbooks", "Category:Physics textbooks"],
+  "3000000000000000202": ["Category:Test preparation", "Category:Workbooks", "Category:Dictionaries"],
+  "3000000000000000203": ["Category:Paperback books", "Category:Novels", "Category:Comic books"],
+  "3000000000000000301": ["Category:Rice cookers", "Category:Electric kettles", "Category:Hair dryers"],
+  "3000000000000000302": ["Category:Storage boxes", "Category:Laundry baskets", "Category:Clothes hangers"],
+  "3000000000000000004": ["Category:Sneakers", "Category:Backpacks", "Category:Jackets"],
+  "3000000000000000005": ["Category:Badminton rackets", "Category:Dumbbells", "Category:Basketballs (balls)"],
+  "3000000000000000006": ["Category:Lipsticks", "Category:Perfume bottles", "Category:Cosmetics"],
+  "3000000000000000007": ["Category:Acoustic guitars", "Category:Ukuleles", "Category:Electronic keyboards"],
+  "3000000000000000801": ["Category:Mountain bikes", "Category:City bicycles", "Category:Road bicycles"],
+  "3000000000000000802": ["Category:Electric scooters", "Category:Electric bicycles", "Category:Electric motor scooters"]
+}

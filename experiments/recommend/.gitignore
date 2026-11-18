@@ -1,0 +1,8 @@
+# MovieLens-100K 不随仓库分发（GroupLens 许可要求不得再分发），由 scripts/download_movielens.sh 下载
+data/ml-100k/
+data/*.zip
+# 模拟数据可由 scripts/gen_campus_data.py 逐字节重新生成
+data/campus/
+build/
+.venv/
+__pycache__/

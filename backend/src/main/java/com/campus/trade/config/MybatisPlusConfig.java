@@ -28,14 +28,15 @@ public class MybatisPlusConfig {
         return new MetaObjectHandler() {
             @Override
             public void insertFill(MetaObject metaObject) {
-                LocalDateTime now = LocalDateTime.now();
+                // DATETIME 无小数秒：截掉纳秒，避免 MySQL 四舍五入到下一秒导致与 NOW() 写入的时间倒挂
+                LocalDateTime now = LocalDateTime.now().withNano(0);
                 strictInsertFill(metaObject, "createTime", LocalDateTime.class, now);
                 strictInsertFill(metaObject, "updateTime", LocalDateTime.class, now);
             }
 
             @Override
             public void updateFill(MetaObject metaObject) {
-                setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+                setFieldValByName("updateTime", LocalDateTime.now().withNano(0), metaObject);
             }
         };
     }

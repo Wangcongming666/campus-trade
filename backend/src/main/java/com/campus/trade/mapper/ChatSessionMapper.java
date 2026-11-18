@@ -23,4 +23,9 @@ public interface ChatSessionMapper extends BaseMapper<ChatSession> {
     @Update("UPDATE chat_session SET initiator_unread = IF(initiator_id = #{userId}, 0, initiator_unread), "
             + "peer_unread = IF(peer_id = #{userId}, 0, peer_unread) WHERE id = #{id}")
     int clearUnread(@Param("id") Long id, @Param("userId") Long userId);
+
+    /** 与该用户有会话的所有对方用户 ID（在线状态推送用）。 */
+    @org.apache.ibatis.annotations.Select("SELECT DISTINCT IF(initiator_id = #{userId}, peer_id, initiator_id) FROM chat_session "
+            + "WHERE initiator_id = #{userId} OR peer_id = #{userId}")
+    java.util.List<Long> selectPeerIds(@Param("userId") Long userId);
 }

@@ -6,6 +6,8 @@ import com.campus.trade.dto.OrderActionDTO;
 import com.campus.trade.dto.OrderCreateDTO;
 import com.campus.trade.dto.OrderQueryDTO;
 import com.campus.trade.service.OrderService;
+import com.campus.trade.service.PayService;
+import com.campus.trade.vo.PayOrderVO;
 import com.campus.trade.vo.OrderVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
+    private final PayService payService;
 
     @Operation(summary = "下单（商品 ON_SHELF→RESERVED）")
     @PostMapping
@@ -44,5 +47,11 @@ public class OrderController {
     @PatchMapping("/{id}/status")
     public Result<OrderVO> changeStatus(@PathVariable Long id, @Valid @RequestBody OrderActionDTO dto) {
         return Result.ok(orderService.changeStatus(id, dto));
+    }
+
+    @Operation(summary = "创建/获取模拟支付单（仅买家；同一订单只有一张 WAITING 支付单，重复请求返回同一张）")
+    @PostMapping("/{id}/pay")
+    public Result<PayOrderVO> pay(@PathVariable Long id) {
+        return Result.ok(payService.createOrGet(id));
     }
 }

@@ -57,6 +57,15 @@ public final class Constants {
         }
     }
 
+    /** 模拟支付单状态 */
+    public static final class PayStatus {
+        public static final String WAITING = "WAITING";
+        public static final String PAID = "PAID";
+        public static final String CLOSED = "CLOSED";
+        private PayStatus() {
+        }
+    }
+
     public static final class OrderStatus {
         public static final String PENDING = "PENDING";
         public static final String PAID = "PAID";

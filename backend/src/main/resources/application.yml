@@ -60,3 +60,16 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+
+# ---------------------------------------------------------------------------
+# 后端新增功能的可选配置（均有代码默认值，需要时在 campus: 下追加，注意与已有 campus: 节点合并，不要重复写顶层 campus:）
+#   campus.pay.timeout-minutes: 15            # 待付款超时时长（分钟），超时自动取消
+#   campus.pay.scan-enabled: true             # 是否开启超时扫描
+#   campus.pay.scan-interval-ms: 60000        # 扫描间隔
+#   campus.chat.presence-ttl-seconds: 180     # 在线状态心跳有效期
+#   campus.chat.presence-heartbeat-ms: 60000  # 在线状态心跳刷新间隔
+#   campus.recommend.feed.size: 100           # 首页推荐分页：每用户缓存的候选序列长度
+#   campus.recommend.feed.cache-minutes: 10   # 首页推荐分页缓存时长
+#   campus.ai.classify.provider: clip         # 图片分类实现 clip | mock | baidu（默认 clip）
+#   百度识别密钥：环境变量 BAIDU_AI_API_KEY / BAIDU_AI_SECRET_KEY
+# ---------------------------------------------------------------------------

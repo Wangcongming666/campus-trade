@@ -4,6 +4,8 @@ import com.campus.trade.common.BizException;
 import com.campus.trade.common.ErrorCode;
 import com.campus.trade.common.Result;
 import com.campus.trade.dto.ChatSendDTO;
+import com.campus.trade.dto.ChatTypingDTO;
+import com.campus.trade.service.ChatPresenceService;
 import com.campus.trade.security.StompPrincipal;
 import com.campus.trade.service.ChatService;
 import jakarta.validation.ConstraintViolation;
@@ -20,7 +22,7 @@ import java.security.Principal;
 import java.util.Set;
 
 /**
- * STOMP 消息入口：SEND /app/chat.send {toUserId, goodsId, content, type}。
+ * STOMP 消息入口：SEND /app/chat.send {toUserId, goodsId, content, type}；SEND /app/chat.typing {sessionId}（正在输入）。
  * 成功后消息推送到收发双方 /user/queue/messages；失败时错误以 {code,msg} 推送到发送方 /user/queue/errors。
  */
 @Slf4j
@@ -29,6 +31,7 @@ import java.util.Set;
 public class ChatStompController {
 
     private final ChatService chatService;
+    private final ChatPresenceService presenceService;
     private final Validator validator;
 
     @MessageMapping("/chat.send")
@@ -38,6 +41,15 @@ public class ChatStompController {
             throw new BizException(ErrorCode.BAD_REQUEST, v.iterator().next().getMessage());
         }
         chatService.send(userId(principal), dto);
+    }
+
+    /** SEND /app/chat.typing {sessionId}：校验发送方属于该会话后转发给对方 /user/queue/typing {sessionId, userId}。 */
+    @MessageMapping("/chat.typing")
+    public void typing(@Payload ChatTypingDTO dto, Principal principal) {
+        if (dto == null || dto.getSessionId() == null) {
+            throw new BizException(ErrorCode.BAD_REQUEST, "sessionId 不能为空");
+        }
+        presenceService.typing(userId(principal), dto.getSessionId());
     }
 
     @MessageExceptionHandler(BizException.class)

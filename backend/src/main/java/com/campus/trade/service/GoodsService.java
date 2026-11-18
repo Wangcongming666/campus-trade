@@ -152,6 +152,7 @@ public class GoodsService {
             vo.setOriginalPrice(g.getOriginalPrice());
             vo.setCondition(g.getCondition());
             vo.setTradeMethod(g.getTradeMethod());
+            vo.setTradeLocation(g.getTradeLocation());
             vo.setStatus(g.getStatus());
             vo.setCategoryId(g.getCategoryId());
             vo.setCategoryName(catNames.get(g.getCategoryId()));
@@ -274,6 +275,7 @@ public class GoodsService {
         g.setOriginalPrice(dto.getOriginalPrice());
         g.setCondition(dto.getCondition());
         g.setTradeMethod(StringUtils.hasText(dto.getTradeMethod()) ? dto.getTradeMethod() : "FACE");
+        g.setTradeLocation(StringUtils.hasText(dto.getTradeLocation()) ? dto.getTradeLocation().trim() : null);
         g.setCategoryId(dto.getCategoryId());
         List<String> images = dto.getImages() == null ? List.of() : dto.getImages();
         g.setCoverUrl(images.isEmpty() ? null : images.get(0));

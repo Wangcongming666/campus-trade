@@ -22,3 +22,11 @@ storage:
 logging:
   level:
     com.campus.trade: info
+
+# 图片分类测试使用 mock（按文件名关键词）；超时扫描在测试里直接调用 PayService.scanTimeoutOrders()
+campus:
+  ai:
+    classify:
+      provider: mock
+  pay:
+    scan-enabled: false

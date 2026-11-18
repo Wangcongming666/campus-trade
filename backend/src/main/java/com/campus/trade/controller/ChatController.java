@@ -5,6 +5,7 @@ import com.campus.trade.common.PageResult;
 import com.campus.trade.common.Result;
 import com.campus.trade.dto.ChatSessionCreateDTO;
 import com.campus.trade.security.SecurityUtils;
+import com.campus.trade.service.ChatPresenceService;
 import com.campus.trade.service.ChatService;
 import com.campus.trade.vo.ChatMessageVO;
 import com.campus.trade.vo.ChatSessionVO;
@@ -18,13 +19,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "聊天（HTTP）", description = "实时消息走 STOMP：/ws，SEND /app/chat.send，订阅 /user/queue/messages、/user/queue/read、/user/queue/errors")
+@Tag(name = "聊天（HTTP）", description = "实时消息走 STOMP：/ws，SEND /app/chat.send，订阅 /user/queue/messages、/user/queue/read、/user/queue/errors、/user/queue/presence、/user/queue/typing；SEND /app/chat.typing")
 @RestController
 @RequestMapping("/api/v1/chat")
 @RequiredArgsConstructor
 public class ChatController {
 
     private final ChatService chatService;
+    private final ChatPresenceService presenceService;
 
     @Operation(summary = "发起/获取会话（同一商品同一对用户唯一）")
     @PostMapping("/sessions")
@@ -48,5 +50,11 @@ public class ChatController {
     @PatchMapping("/sessions/{sessionId}/read")
     public Result<ReadReceiptVO> read(@PathVariable Long sessionId) {
         return Result.ok(chatService.markRead(SecurityUtils.requireUserId(), sessionId));
+    }
+
+    @Operation(summary = "批量查询在线状态 userIds=1,2（最多 100 个），返回 {userId: true/false}")
+    @GetMapping("/online")
+    public Result<java.util.Map<Long, Boolean>> online(@RequestParam("userIds") List<Long> userIds) {
+        return Result.ok(presenceService.online(userIds));
     }
 }
