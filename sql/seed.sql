@@ -2,7 +2,9 @@
 -- 校园二手交易智能平台 · 开发/演示种子数据
 -- 先执行 schema.sql（会重建所有表），再执行本脚本：
 --   mysql -uroot -p < schema.sql && mysql -uroot -p < seed.sql
--- 账号：admin / admin123（ADMIN）；user1 / 123456（已认证）；user2 / 123456（认证待审核）（均为 BCrypt）
+-- 账号：admin / admin123（ADMIN）；user1 / 123456（已认证）；user2 / 123456（认证待审核）；
+--       user3、user4 / 123456（普通用户，提供协同过滤所需的共同行为）（均为 BCrypt）
+-- 推荐演示：user1 登录后首页可同时看到 CF（你…类似的…）、INTEREST（你关注了…）、HOT（本周热门/最新发布）三种理由
 -- 图片为占位 URL（picsum.photos）
 -- =============================================================================
 USE `campus_trade`;
@@ -17,7 +19,11 @@ VALUES
   (2000000000000000002, 'user1', '$2a$10$RF6f90pg8oqmDx1wd40nx.Q3S4.1VA6TL9m4onli95fizEEYv9w8e', '小明同学',
    'https://picsum.photos/seed/avatar-user1/200/200', '13800000001', '2022001001', '示例大学', 'USER', 'NORMAL', 98, 'APPROVED'),
   (2000000000000000003, 'user2', '$2a$10$RF6f90pg8oqmDx1wd40nx.Q3S4.1VA6TL9m4onli95fizEEYv9w8e', '小红学姐',
-   'https://picsum.photos/seed/avatar-user2/200/200', '13800000002', NULL, NULL, 'USER', 'NORMAL', 100, 'PENDING');
+   'https://picsum.photos/seed/avatar-user2/200/200', '13800000002', NULL, NULL, 'USER', 'NORMAL', 100, 'PENDING'),
+  (2000000000000000004, 'user3', '$2a$10$RF6f90pg8oqmDx1wd40nx.Q3S4.1VA6TL9m4onli95fizEEYv9w8e', '阿杰学长',
+   'https://picsum.photos/seed/avatar-user3/200/200', '13800000003', NULL, NULL, 'USER', 'NORMAL', 100, 'NONE'),
+  (2000000000000000005, 'user4', '$2a$10$RF6f90pg8oqmDx1wd40nx.Q3S4.1VA6TL9m4onli95fizEEYv9w8e', '小雨同学',
+   'https://picsum.photos/seed/avatar-user4/200/200', '13800000004', NULL, NULL, 'USER', 'NORMAL', 100, 'NONE');
 
 INSERT INTO `student_auth` (`id`, `user_id`, `student_no`, `real_name`, `school`, `card_image_url`, `status`,
                             `auditor_id`, `audit_time`)
@@ -63,7 +69,7 @@ VALUES
    'https://picsum.photos/seed/goods2-1/600/600', 88, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
   (4000000000000000003, 2000000000000000003, 3000000000000000103, '索尼 WH-1000XM4 降噪耳机',
    '降噪效果很好，耳罩有轻微使用痕迹，盒子配件齐全。', 899.00, 2299.00, 'GOOD', 'FACE', 'ON_SHELF',
-   'https://picsum.photos/seed/goods3-1/600/600', 34, 0, DATE_SUB(NOW(), INTERVAL 3 DAY)),
+   'https://picsum.photos/seed/goods3-1/600/600', 34, 1, DATE_SUB(NOW(), INTERVAL 3 DAY)),
   (4000000000000000004, 2000000000000000003, 3000000000000000201, '高等数学 同济第七版 上下册',
    '有少量笔记，不影响阅读，期末复习很有用。', 25.00, 78.00, 'FAIR', 'FACE', 'ON_SHELF',
    'https://picsum.photos/seed/goods4-1/600/600', 120, 0, DATE_SUB(NOW(), INTERVAL 4 DAY)),
@@ -100,7 +106,17 @@ VALUES
    'https://picsum.photos/seed/goods14-1/600/600', 21, 0, DATE_SUB(NOW(), INTERVAL 4 DAY)),
   (4000000000000000015, 2000000000000000003, 3000000000000000301, '护眼 LED 台灯 三档调光',
    '宿舍学习用，灯光柔和。', 35.00, 129.00, 'GOOD', 'FACE', 'SOLD',
-   'https://picsum.photos/seed/goods15-1/600/600', 44, 0, DATE_SUB(NOW(), INTERVAL 6 DAY));
+   'https://picsum.photos/seed/goods15-1/600/600', 44, 0, DATE_SUB(NOW(), INTERVAL 6 DAY)),
+  -- 推荐演示商品（user2 在售）：17/19 与索尼耳机有共同交互 → user1 的 CF；18 属教材书籍 → user1 的 INTEREST
+  (4000000000000000017, 2000000000000000003, 3000000000000000103, 'AirPods Pro 二代 主动降噪',
+   '苹果原装，续航正常，充电盒有细微划痕。', 699.00, 1899.00, 'GOOD', 'FACE', 'ON_SHELF',
+   'https://picsum.photos/seed/goods17-1/600/600', 27, 2, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+  (4000000000000000018, 2000000000000000003, 3000000000000000201, '线性代数 同济第六版',
+   '几乎没有笔记，附课后习题答案。', 15.00, 36.00, 'LIKE_NEW', 'FACE', 'ON_SHELF',
+   'https://picsum.photos/seed/goods18-1/600/600', 8, 0, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+  (4000000000000000019, 2000000000000000003, 3000000000000000103, 'JBL Flip 5 蓝牙音箱',
+   '防水，低音足，宿舍外放够用。', 299.00, 799.00, 'GOOD', 'FACE', 'ON_SHELF',
+   'https://picsum.photos/seed/goods19-1/600/600', 15, 0, DATE_SUB(NOW(), INTERVAL 3 DAY));
 
 -- 审核驳回示例（带 audit_reason）
 INSERT INTO `goods` (`id`, `seller_id`, `category_id`, `title`, `description`, `price`, `original_price`, `condition`,
@@ -134,7 +150,10 @@ INSERT INTO `goods_image` (`id`, `goods_id`, `url`, `name`, `sort_no`) VALUES
   (5000000000000001301, 4000000000000000013, 'https://picsum.photos/seed/goods13-1/600/600', 'goods13-1.jpg', 1),
   (5000000000000001401, 4000000000000000014, 'https://picsum.photos/seed/goods14-1/600/600', 'goods14-1.jpg', 1),
   (5000000000000001501, 4000000000000000015, 'https://picsum.photos/seed/goods15-1/600/600', 'goods15-1.jpg', 1),
-  (5000000000000001601, 4000000000000000016, 'https://picsum.photos/seed/goods16-1/600/600', 'goods16-1.jpg', 1);
+  (5000000000000001601, 4000000000000000016, 'https://picsum.photos/seed/goods16-1/600/600', 'goods16-1.jpg', 1),
+  (5000000000000001701, 4000000000000000017, 'https://picsum.photos/seed/goods17-1/600/600', 'goods17-1.jpg', 1),
+  (5000000000000001801, 4000000000000000018, 'https://picsum.photos/seed/goods18-1/600/600', 'goods18-1.jpg', 1),
+  (5000000000000001901, 4000000000000000019, 'https://picsum.photos/seed/goods19-1/600/600', 'goods19-1.jpg', 1);
 
 -- ---------------------------------------------------------------- 兴趣分类示例
 INSERT INTO `user_interest` (`id`, `user_id`, `category_id`) VALUES
@@ -185,7 +204,24 @@ INSERT INTO `user_behavior` (`id`, `user_id`, `goods_id`, `behavior_type`, `crea
   (6100000000000000003, 2000000000000000002, 4000000000000000013, 4, DATE_SUB(NOW(), INTERVAL 2 HOUR)),
   (6100000000000000004, 2000000000000000003, 4000000000000000014, 4, DATE_SUB(NOW(), INTERVAL 1 DAY)),
   (6100000000000000005, 2000000000000000002, 4000000000000000015, 4, DATE_SUB(NOW(), INTERVAL 5 DAY)),
-  (6100000000000000006, 2000000000000000002, 4000000000000000006, 4, DATE_SUB(NOW(), INTERVAL 3 DAY));
+  (6100000000000000006, 2000000000000000002, 4000000000000000006, 4, DATE_SUB(NOW(), INTERVAL 3 DAY)),
+  -- user3、user4 同时交互索尼耳机(3)与 AirPods(17)/JBL(19)，形成物品相似度；user4 浏览羽毛球拍(8) 贡献热度
+  (6100000000000000007, 2000000000000000004, 4000000000000000003, 1, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+  (6100000000000000008, 2000000000000000004, 4000000000000000003, 2, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+  (6100000000000000009, 2000000000000000004, 4000000000000000017, 1, DATE_SUB(NOW(), INTERVAL 1 DAY)),
+  (6100000000000000010, 2000000000000000004, 4000000000000000017, 2, DATE_SUB(NOW(), INTERVAL 1 DAY)),
+  (6100000000000000011, 2000000000000000004, 4000000000000000019, 1, DATE_SUB(NOW(), INTERVAL 1 DAY)),
+  (6100000000000000012, 2000000000000000005, 4000000000000000003, 1, DATE_SUB(NOW(), INTERVAL 30 HOUR)),
+  (6100000000000000013, 2000000000000000005, 4000000000000000017, 1, DATE_SUB(NOW(), INTERVAL 20 HOUR)),
+  (6100000000000000014, 2000000000000000005, 4000000000000000017, 2, DATE_SUB(NOW(), INTERVAL 20 HOUR)),
+  (6100000000000000015, 2000000000000000005, 4000000000000000019, 1, DATE_SUB(NOW(), INTERVAL 10 HOUR)),
+  (6100000000000000016, 2000000000000000005, 4000000000000000008, 1, DATE_SUB(NOW(), INTERVAL 5 HOUR));
+
+-- ---------------------------------------------------------------- 收藏（与上面 behavior_type=2 一致）
+INSERT INTO `favorite` (`id`, `user_id`, `goods_id`, `create_time`) VALUES
+  (6200000000000000001, 2000000000000000004, 4000000000000000003, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+  (6200000000000000002, 2000000000000000004, 4000000000000000017, DATE_SUB(NOW(), INTERVAL 1 DAY)),
+  (6200000000000000003, 2000000000000000005, 4000000000000000017, DATE_SUB(NOW(), INTERVAL 20 HOUR));
 
 -- ---------------------------------------------------------------- 举报（待处理一条）
 INSERT INTO `report` (`id`, `reporter_id`, `target_type`, `target_id`, `reason`, `detail`, `status`) VALUES
