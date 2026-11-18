@@ -90,7 +90,7 @@ public class BaiduImageClassifier implements ImageClassifier {
         List<ClassifyResult.Candidate> ranked = new ArrayList<>();
         best.forEach((cat, score) -> resolver.byName(cat, score).ifPresent(ranked::add));
         ranked.sort(Comparator.comparingDouble(ClassifyResult.Candidate::confidence).reversed());
-        return ClassifyResult.of(ranked, NAME);
+        return ClassifyResult.of(ranked, "BAIDU");
     }
 
     private synchronized String accessToken() throws Exception {

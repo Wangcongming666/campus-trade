@@ -21,7 +21,7 @@ class BaiduImageClassifierTest extends BaseIntegrationTest {
                 + "{\"keyword\":\"智能手机\",\"root\":\"商品-数码产品\",\"score\":0.41},"
                 + "{\"keyword\":\"桌子\",\"root\":\"商品-家具\",\"score\":0.30}]";
         ClassifyResult r = c.fromKeywords(new ObjectMapper().readTree(json));
-        assertEquals("baidu", r.source());
+        assertEquals("BAIDU", r.source());
         assertEquals(3000000000000000103L, r.categoryId());
         assertEquals("耳机音箱", r.categoryName());
         assertEquals(0.83, r.confidence(), 1e-9);

@@ -49,6 +49,6 @@ public class MockImageClassifier implements ImageClassifier {
                 resolver.byName(name, ranked.isEmpty() ? 0.1 : 0.05).ifPresent(ranked::add);
             }
         }
-        return ClassifyResult.of(ranked, NAME);
+        return ClassifyResult.of(ranked, "MOCK");
     }
 }

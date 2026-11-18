@@ -33,7 +33,7 @@ class AiClassifyTest extends BaseIntegrationTest {
     void classifyUploadedFileByMock() throws Exception {
         String t = newUserToken();
         JsonNode d = ok(auth(multipart("/api/v1/ai/classify").file(png("airpods-pro-耳机.png")), t));
-        assertEquals("mock", d.get("source").asText());
+        assertEquals("MOCK", d.get("source").asText());
         assertEquals(String.valueOf(CAT_HEADPHONE), d.get("categoryId").asText());
         assertTrue(d.get("categoryId").isTextual(), "Long → string in record");
         assertEquals("耳机音箱", d.get("categoryName").asText());
@@ -63,7 +63,7 @@ class AiClassifyTest extends BaseIntegrationTest {
         String url = ok(auth(multipart("/api/v1/files/upload").file(png("guitar.png")), t)).get("url").asText();
         assertTrue(url.startsWith("/files/"));
         JsonNode d = ok(auth(multipart("/api/v1/ai/classify").param("imageUrl", url), t));
-        assertEquals("mock", d.get("source").asText());
+        assertEquals("MOCK", d.get("source").asText());
         assertEquals(3, d.get("candidates").size());
 
         // 防 SSRF / 路径穿越：非本站路径一律 400
